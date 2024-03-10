@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"notification-service/ent/friendship"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
-	"notification-service/ent/toktok"
 	"notification-service/ent/user"
 	"time"
 
@@ -43,34 +43,34 @@ func (uc *UserCreate) SetUsername(s string) *UserCreate {
 	return uc
 }
 
-// AddToktoksReceiverIDs adds the "toktoks_receiver" edge to the TokTok entity by IDs.
-func (uc *UserCreate) AddToktoksReceiverIDs(ids ...int) *UserCreate {
-	uc.mutation.AddToktoksReceiverIDs(ids...)
+// AddFriendshipsReceiverIDs adds the "friendshipsReceiver" edge to the Friendship entity by IDs.
+func (uc *UserCreate) AddFriendshipsReceiverIDs(ids ...int) *UserCreate {
+	uc.mutation.AddFriendshipsReceiverIDs(ids...)
 	return uc
 }
 
-// AddToktoksReceiver adds the "toktoks_receiver" edges to the TokTok entity.
-func (uc *UserCreate) AddToktoksReceiver(t ...*TokTok) *UserCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// AddFriendshipsReceiver adds the "friendshipsReceiver" edges to the Friendship entity.
+func (uc *UserCreate) AddFriendshipsReceiver(f ...*Friendship) *UserCreate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uc.AddToktoksReceiverIDs(ids...)
+	return uc.AddFriendshipsReceiverIDs(ids...)
 }
 
-// AddToktoksSenderIDs adds the "toktoks_sender" edge to the TokTok entity by IDs.
-func (uc *UserCreate) AddToktoksSenderIDs(ids ...int) *UserCreate {
-	uc.mutation.AddToktoksSenderIDs(ids...)
+// AddFriendshipsSenderIDs adds the "friendshipsSender" edge to the Friendship entity by IDs.
+func (uc *UserCreate) AddFriendshipsSenderIDs(ids ...int) *UserCreate {
+	uc.mutation.AddFriendshipsSenderIDs(ids...)
 	return uc
 }
 
-// AddToktoksSender adds the "toktoks_sender" edges to the TokTok entity.
-func (uc *UserCreate) AddToktoksSender(t ...*TokTok) *UserCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// AddFriendshipsSender adds the "friendshipsSender" edges to the Friendship entity.
+func (uc *UserCreate) AddFriendshipsSender(f ...*Friendship) *UserCreate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uc.AddToktoksSenderIDs(ids...)
+	return uc.AddFriendshipsSenderIDs(ids...)
 }
 
 // AddNotificationIDs adds the "notifications" edge to the Notification entity by IDs.
@@ -174,15 +174,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 		_node.Username = value
 	}
-	if nodes := uc.mutation.ToktoksReceiverIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.FriendshipsReceiverIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -190,15 +190,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.ToktoksSenderIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.FriendshipsSenderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

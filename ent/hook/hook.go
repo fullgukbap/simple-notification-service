@@ -20,6 +20,30 @@ func (f EntityTypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EntityTypeMutation", m)
 }
 
+// The FriendshipFunc type is an adapter to allow the use of ordinary
+// function as Friendship mutator.
+type FriendshipFunc func(context.Context, *ent.FriendshipMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FriendshipFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FriendshipMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FriendshipMutation", m)
+}
+
+// The FriendshipStatusFunc type is an adapter to allow the use of ordinary
+// function as FriendshipStatus mutator.
+type FriendshipStatusFunc func(context.Context, *ent.FriendshipStatusMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FriendshipStatusFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FriendshipStatusMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FriendshipStatusMutation", m)
+}
+
 // The NotificationFunc type is an adapter to allow the use of ordinary
 // function as Notification mutator.
 type NotificationFunc func(context.Context, *ent.NotificationMutation) (ent.Value, error)
@@ -54,18 +78,6 @@ func (f NotificationObjectIDFunc) Mutate(ctx context.Context, m ent.Mutation) (e
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationObjectIDMutation", m)
-}
-
-// The TokTokFunc type is an adapter to allow the use of ordinary
-// function as TokTok mutator.
-type TokTokFunc func(context.Context, *ent.TokTokMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f TokTokFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TokTokMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TokTokMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary

@@ -4,11 +4,12 @@ package runtime
 
 import (
 	"notification-service/ent/entitytype"
+	"notification-service/ent/friendship"
+	"notification-service/ent/friendshipstatus"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
 	"notification-service/ent/notificationobjectid"
 	"notification-service/ent/schema"
-	"notification-service/ent/toktok"
 	"notification-service/ent/user"
 )
 
@@ -21,6 +22,16 @@ func init() {
 	entitytype.Hooks[0] = entitytypeMixinHooks0[0]
 	entitytypeMixinInters0 := entitytypeMixin[0].Interceptors()
 	entitytype.Interceptors[0] = entitytypeMixinInters0[0]
+	friendshipMixin := schema.Friendship{}.Mixin()
+	friendshipMixinHooks0 := friendshipMixin[0].Hooks()
+	friendship.Hooks[0] = friendshipMixinHooks0[0]
+	friendshipMixinInters0 := friendshipMixin[0].Interceptors()
+	friendship.Interceptors[0] = friendshipMixinInters0[0]
+	friendshipstatusMixin := schema.FriendshipStatus{}.Mixin()
+	friendshipstatusMixinHooks0 := friendshipstatusMixin[0].Hooks()
+	friendshipstatus.Hooks[0] = friendshipstatusMixinHooks0[0]
+	friendshipstatusMixinInters0 := friendshipstatusMixin[0].Interceptors()
+	friendshipstatus.Interceptors[0] = friendshipstatusMixinInters0[0]
 	notificationMixin := schema.Notification{}.Mixin()
 	notificationMixinHooks0 := notificationMixin[0].Hooks()
 	notification.Hooks[0] = notificationMixinHooks0[0]
@@ -48,11 +59,6 @@ func init() {
 	notificationobjectidDescEntityID := notificationobjectidFields[0].Descriptor()
 	// notificationobjectid.EntityIDValidator is a validator for the "entity_id" field. It is called by the builders before save.
 	notificationobjectid.EntityIDValidator = notificationobjectidDescEntityID.Validators[0].(func(int) error)
-	toktokMixin := schema.TokTok{}.Mixin()
-	toktokMixinHooks0 := toktokMixin[0].Hooks()
-	toktok.Hooks[0] = toktokMixinHooks0[0]
-	toktokMixinInters0 := toktokMixin[0].Interceptors()
-	toktok.Interceptors[0] = toktokMixinInters0[0]
 	userMixin := schema.User{}.Mixin()
 	userMixinHooks0 := userMixin[0].Hooks()
 	user.Hooks[0] = userMixinHooks0[0]

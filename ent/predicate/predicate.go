@@ -9,6 +9,12 @@ import (
 // EntityType is the predicate function for entitytype builders.
 type EntityType func(*sql.Selector)
 
+// Friendship is the predicate function for friendship builders.
+type Friendship func(*sql.Selector)
+
+// FriendshipStatus is the predicate function for friendshipstatus builders.
+type FriendshipStatus func(*sql.Selector)
+
 // Notification is the predicate function for notification builders.
 type Notification func(*sql.Selector)
 
@@ -17,9 +23,6 @@ type NotificationChange func(*sql.Selector)
 
 // NotificationObjectID is the predicate function for notificationobjectid builders.
 type NotificationObjectID func(*sql.Selector)
-
-// TokTok is the predicate function for toktok builders.
-type TokTok func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

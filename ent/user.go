@@ -29,10 +29,10 @@ type User struct {
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// ToktoksReceiver holds the value of the toktoks_receiver edge.
-	ToktoksReceiver []*TokTok `json:"toktoks_receiver,omitempty"`
-	// ToktoksSender holds the value of the toktoks_sender edge.
-	ToktoksSender []*TokTok `json:"toktoks_sender,omitempty"`
+	// FriendshipsReceiver holds the value of the friendshipsReceiver edge.
+	FriendshipsReceiver []*Friendship `json:"friendshipsReceiver,omitempty"`
+	// FriendshipsSender holds the value of the friendshipsSender edge.
+	FriendshipsSender []*Friendship `json:"friendshipsSender,omitempty"`
 	// Notifications holds the value of the notifications edge.
 	Notifications []*Notification `json:"notifications,omitempty"`
 	// NotificationChanges holds the value of the notificationChanges edge.
@@ -42,22 +42,22 @@ type UserEdges struct {
 	loadedTypes [4]bool
 }
 
-// ToktoksReceiverOrErr returns the ToktoksReceiver value or an error if the edge
+// FriendshipsReceiverOrErr returns the FriendshipsReceiver value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) ToktoksReceiverOrErr() ([]*TokTok, error) {
+func (e UserEdges) FriendshipsReceiverOrErr() ([]*Friendship, error) {
 	if e.loadedTypes[0] {
-		return e.ToktoksReceiver, nil
+		return e.FriendshipsReceiver, nil
 	}
-	return nil, &NotLoadedError{edge: "toktoks_receiver"}
+	return nil, &NotLoadedError{edge: "friendshipsReceiver"}
 }
 
-// ToktoksSenderOrErr returns the ToktoksSender value or an error if the edge
+// FriendshipsSenderOrErr returns the FriendshipsSender value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) ToktoksSenderOrErr() ([]*TokTok, error) {
+func (e UserEdges) FriendshipsSenderOrErr() ([]*Friendship, error) {
 	if e.loadedTypes[1] {
-		return e.ToktoksSender, nil
+		return e.FriendshipsSender, nil
 	}
-	return nil, &NotLoadedError{edge: "toktoks_sender"}
+	return nil, &NotLoadedError{edge: "friendshipsSender"}
 }
 
 // NotificationsOrErr returns the Notifications value or an error if the edge
@@ -135,14 +135,14 @@ func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
 }
 
-// QueryToktoksReceiver queries the "toktoks_receiver" edge of the User entity.
-func (u *User) QueryToktoksReceiver() *TokTokQuery {
-	return NewUserClient(u.config).QueryToktoksReceiver(u)
+// QueryFriendshipsReceiver queries the "friendshipsReceiver" edge of the User entity.
+func (u *User) QueryFriendshipsReceiver() *FriendshipQuery {
+	return NewUserClient(u.config).QueryFriendshipsReceiver(u)
 }
 
-// QueryToktoksSender queries the "toktoks_sender" edge of the User entity.
-func (u *User) QueryToktoksSender() *TokTokQuery {
-	return NewUserClient(u.config).QueryToktoksSender(u)
+// QueryFriendshipsSender queries the "friendshipsSender" edge of the User entity.
+func (u *User) QueryFriendshipsSender() *FriendshipQuery {
+	return NewUserClient(u.config).QueryFriendshipsSender(u)
 }
 
 // QueryNotifications queries the "notifications" edge of the User entity.

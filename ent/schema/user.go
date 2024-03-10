@@ -30,8 +30,8 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("toktoks_receiver", TokTok.Type),
-		edge.To("toktoks_sender", TokTok.Type),
+		edge.To("friendshipsReceiver", Friendship.Type),
+		edge.To("friendshipsSender", Friendship.Type),
 		edge.To("notifications", Notification.Type),
 		edge.To("notificationChanges", NotificationChange.Type),
 	}

@@ -21,6 +21,52 @@ var (
 		Columns:    EntityTypesColumns,
 		PrimaryKey: []*schema.Column{EntityTypesColumns[0]},
 	}
+	// FriendshipsColumns holds the columns for the "friendships" table.
+	FriendshipsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "friendship_status_friendships", Type: field.TypeInt, Nullable: true},
+		{Name: "user_friendships_receiver", Type: field.TypeInt, Nullable: true},
+		{Name: "user_friendships_sender", Type: field.TypeInt, Nullable: true},
+	}
+	// FriendshipsTable holds the schema information for the "friendships" table.
+	FriendshipsTable = &schema.Table{
+		Name:       "friendships",
+		Columns:    FriendshipsColumns,
+		PrimaryKey: []*schema.Column{FriendshipsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "friendships_friendship_status_friendships",
+				Columns:    []*schema.Column{FriendshipsColumns[2]},
+				RefColumns: []*schema.Column{FriendshipStatusColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "friendships_users_friendshipsReceiver",
+				Columns:    []*schema.Column{FriendshipsColumns[3]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "friendships_users_friendshipsSender",
+				Columns:    []*schema.Column{FriendshipsColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// FriendshipStatusColumns holds the columns for the "friendship_status" table.
+	FriendshipStatusColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "description", Type: field.TypeString, Unique: true},
+	}
+	// FriendshipStatusTable holds the schema information for the "friendship_status" table.
+	FriendshipStatusTable = &schema.Table{
+		Name:       "friendship_status",
+		Columns:    FriendshipStatusColumns,
+		PrimaryKey: []*schema.Column{FriendshipStatusColumns[0]},
+	}
 	// NotificationsColumns holds the columns for the "notifications" table.
 	NotificationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -97,33 +143,6 @@ var (
 			},
 		},
 	}
-	// TokToksColumns holds the columns for the "tok_toks" table.
-	TokToksColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
-		{Name: "user_toktoks_receiver", Type: field.TypeInt, Nullable: true},
-		{Name: "user_toktoks_sender", Type: field.TypeInt, Nullable: true},
-	}
-	// TokToksTable holds the schema information for the "tok_toks" table.
-	TokToksTable = &schema.Table{
-		Name:       "tok_toks",
-		Columns:    TokToksColumns,
-		PrimaryKey: []*schema.Column{TokToksColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "tok_toks_users_toktoks_receiver",
-				Columns:    []*schema.Column{TokToksColumns[2]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "tok_toks_users_toktoks_sender",
-				Columns:    []*schema.Column{TokToksColumns[3]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -139,20 +158,22 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		EntityTypesTable,
+		FriendshipsTable,
+		FriendshipStatusTable,
 		NotificationsTable,
 		NotificationChangesTable,
 		NotificationObjectIdsTable,
-		TokToksTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	FriendshipsTable.ForeignKeys[0].RefTable = FriendshipStatusTable
+	FriendshipsTable.ForeignKeys[1].RefTable = UsersTable
+	FriendshipsTable.ForeignKeys[2].RefTable = UsersTable
 	NotificationsTable.ForeignKeys[0].RefTable = NotificationObjectIdsTable
 	NotificationsTable.ForeignKeys[1].RefTable = UsersTable
 	NotificationChangesTable.ForeignKeys[0].RefTable = NotificationObjectIdsTable
 	NotificationChangesTable.ForeignKeys[1].RefTable = UsersTable
 	NotificationObjectIdsTable.ForeignKeys[0].RefTable = EntityTypesTable
-	TokToksTable.ForeignKeys[0].RefTable = UsersTable
-	TokToksTable.ForeignKeys[1].RefTable = UsersTable
 }

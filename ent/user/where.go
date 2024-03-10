@@ -180,21 +180,21 @@ func UsernameContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldUsername, v))
 }
 
-// HasToktoksReceiver applies the HasEdge predicate on the "toktoks_receiver" edge.
-func HasToktoksReceiver() predicate.User {
+// HasFriendshipsReceiver applies the HasEdge predicate on the "friendshipsReceiver" edge.
+func HasFriendshipsReceiver() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ToktoksReceiverTable, ToktoksReceiverColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, FriendshipsReceiverTable, FriendshipsReceiverColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasToktoksReceiverWith applies the HasEdge predicate on the "toktoks_receiver" edge with a given conditions (other predicates).
-func HasToktoksReceiverWith(preds ...predicate.TokTok) predicate.User {
+// HasFriendshipsReceiverWith applies the HasEdge predicate on the "friendshipsReceiver" edge with a given conditions (other predicates).
+func HasFriendshipsReceiverWith(preds ...predicate.Friendship) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := newToktoksReceiverStep()
+		step := newFriendshipsReceiverStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -203,21 +203,21 @@ func HasToktoksReceiverWith(preds ...predicate.TokTok) predicate.User {
 	})
 }
 
-// HasToktoksSender applies the HasEdge predicate on the "toktoks_sender" edge.
-func HasToktoksSender() predicate.User {
+// HasFriendshipsSender applies the HasEdge predicate on the "friendshipsSender" edge.
+func HasFriendshipsSender() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ToktoksSenderTable, ToktoksSenderColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, FriendshipsSenderTable, FriendshipsSenderColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasToktoksSenderWith applies the HasEdge predicate on the "toktoks_sender" edge with a given conditions (other predicates).
-func HasToktoksSenderWith(preds ...predicate.TokTok) predicate.User {
+// HasFriendshipsSenderWith applies the HasEdge predicate on the "friendshipsSender" edge with a given conditions (other predicates).
+func HasFriendshipsSenderWith(preds ...predicate.Friendship) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := newToktoksSenderStep()
+		step := newFriendshipsSenderStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

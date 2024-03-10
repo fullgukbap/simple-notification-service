@@ -17,30 +17,30 @@ const (
 	FieldDeleteTime = "delete_time"
 	// FieldUsername holds the string denoting the username field in the database.
 	FieldUsername = "username"
-	// EdgeToktoksReceiver holds the string denoting the toktoks_receiver edge name in mutations.
-	EdgeToktoksReceiver = "toktoks_receiver"
-	// EdgeToktoksSender holds the string denoting the toktoks_sender edge name in mutations.
-	EdgeToktoksSender = "toktoks_sender"
+	// EdgeFriendshipsReceiver holds the string denoting the friendshipsreceiver edge name in mutations.
+	EdgeFriendshipsReceiver = "friendshipsReceiver"
+	// EdgeFriendshipsSender holds the string denoting the friendshipssender edge name in mutations.
+	EdgeFriendshipsSender = "friendshipsSender"
 	// EdgeNotifications holds the string denoting the notifications edge name in mutations.
 	EdgeNotifications = "notifications"
 	// EdgeNotificationChanges holds the string denoting the notificationchanges edge name in mutations.
 	EdgeNotificationChanges = "notificationChanges"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// ToktoksReceiverTable is the table that holds the toktoks_receiver relation/edge.
-	ToktoksReceiverTable = "tok_toks"
-	// ToktoksReceiverInverseTable is the table name for the TokTok entity.
-	// It exists in this package in order to avoid circular dependency with the "toktok" package.
-	ToktoksReceiverInverseTable = "tok_toks"
-	// ToktoksReceiverColumn is the table column denoting the toktoks_receiver relation/edge.
-	ToktoksReceiverColumn = "user_toktoks_receiver"
-	// ToktoksSenderTable is the table that holds the toktoks_sender relation/edge.
-	ToktoksSenderTable = "tok_toks"
-	// ToktoksSenderInverseTable is the table name for the TokTok entity.
-	// It exists in this package in order to avoid circular dependency with the "toktok" package.
-	ToktoksSenderInverseTable = "tok_toks"
-	// ToktoksSenderColumn is the table column denoting the toktoks_sender relation/edge.
-	ToktoksSenderColumn = "user_toktoks_sender"
+	// FriendshipsReceiverTable is the table that holds the friendshipsReceiver relation/edge.
+	FriendshipsReceiverTable = "friendships"
+	// FriendshipsReceiverInverseTable is the table name for the Friendship entity.
+	// It exists in this package in order to avoid circular dependency with the "friendship" package.
+	FriendshipsReceiverInverseTable = "friendships"
+	// FriendshipsReceiverColumn is the table column denoting the friendshipsReceiver relation/edge.
+	FriendshipsReceiverColumn = "user_friendships_receiver"
+	// FriendshipsSenderTable is the table that holds the friendshipsSender relation/edge.
+	FriendshipsSenderTable = "friendships"
+	// FriendshipsSenderInverseTable is the table name for the Friendship entity.
+	// It exists in this package in order to avoid circular dependency with the "friendship" package.
+	FriendshipsSenderInverseTable = "friendships"
+	// FriendshipsSenderColumn is the table column denoting the friendshipsSender relation/edge.
+	FriendshipsSenderColumn = "user_friendships_sender"
 	// NotificationsTable is the table that holds the notifications relation/edge.
 	NotificationsTable = "notifications"
 	// NotificationsInverseTable is the table name for the Notification entity.
@@ -102,31 +102,31 @@ func ByUsername(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUsername, opts...).ToFunc()
 }
 
-// ByToktoksReceiverCount orders the results by toktoks_receiver count.
-func ByToktoksReceiverCount(opts ...sql.OrderTermOption) OrderOption {
+// ByFriendshipsReceiverCount orders the results by friendshipsReceiver count.
+func ByFriendshipsReceiverCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newToktoksReceiverStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newFriendshipsReceiverStep(), opts...)
 	}
 }
 
-// ByToktoksReceiver orders the results by toktoks_receiver terms.
-func ByToktoksReceiver(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByFriendshipsReceiver orders the results by friendshipsReceiver terms.
+func ByFriendshipsReceiver(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newToktoksReceiverStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newFriendshipsReceiverStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
-// ByToktoksSenderCount orders the results by toktoks_sender count.
-func ByToktoksSenderCount(opts ...sql.OrderTermOption) OrderOption {
+// ByFriendshipsSenderCount orders the results by friendshipsSender count.
+func ByFriendshipsSenderCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newToktoksSenderStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newFriendshipsSenderStep(), opts...)
 	}
 }
 
-// ByToktoksSender orders the results by toktoks_sender terms.
-func ByToktoksSender(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByFriendshipsSender orders the results by friendshipsSender terms.
+func ByFriendshipsSender(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newToktoksSenderStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newFriendshipsSenderStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -157,18 +157,18 @@ func ByNotificationChanges(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOpti
 		sqlgraph.OrderByNeighborTerms(s, newNotificationChangesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newToktoksReceiverStep() *sqlgraph.Step {
+func newFriendshipsReceiverStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ToktoksReceiverInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ToktoksReceiverTable, ToktoksReceiverColumn),
+		sqlgraph.To(FriendshipsReceiverInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FriendshipsReceiverTable, FriendshipsReceiverColumn),
 	)
 }
-func newToktoksSenderStep() *sqlgraph.Step {
+func newFriendshipsSenderStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ToktoksSenderInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ToktoksSenderTable, ToktoksSenderColumn),
+		sqlgraph.To(FriendshipsSenderInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FriendshipsSenderTable, FriendshipsSenderColumn),
 	)
 }
 func newNotificationsStep() *sqlgraph.Step {

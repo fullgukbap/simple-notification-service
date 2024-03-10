@@ -7,11 +7,12 @@ import (
 	"fmt"
 	"notification-service/ent"
 	"notification-service/ent/entitytype"
+	"notification-service/ent/friendship"
+	"notification-service/ent/friendshipstatus"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
 	"notification-service/ent/notificationobjectid"
 	"notification-service/ent/predicate"
-	"notification-service/ent/toktok"
 	"notification-service/ent/user"
 
 	"entgo.io/ent/dialect/sql"
@@ -100,6 +101,60 @@ func (f TraverseEntityType) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.EntityTypeQuery", q)
 }
 
+// The FriendshipFunc type is an adapter to allow the use of ordinary function as a Querier.
+type FriendshipFunc func(context.Context, *ent.FriendshipQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f FriendshipFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.FriendshipQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.FriendshipQuery", q)
+}
+
+// The TraverseFriendship type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseFriendship func(context.Context, *ent.FriendshipQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseFriendship) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseFriendship) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FriendshipQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.FriendshipQuery", q)
+}
+
+// The FriendshipStatusFunc type is an adapter to allow the use of ordinary function as a Querier.
+type FriendshipStatusFunc func(context.Context, *ent.FriendshipStatusQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f FriendshipStatusFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.FriendshipStatusQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.FriendshipStatusQuery", q)
+}
+
+// The TraverseFriendshipStatus type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseFriendshipStatus func(context.Context, *ent.FriendshipStatusQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseFriendshipStatus) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseFriendshipStatus) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FriendshipStatusQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.FriendshipStatusQuery", q)
+}
+
 // The NotificationFunc type is an adapter to allow the use of ordinary function as a Querier.
 type NotificationFunc func(context.Context, *ent.NotificationQuery) (ent.Value, error)
 
@@ -181,33 +236,6 @@ func (f TraverseNotificationObjectID) Traverse(ctx context.Context, q ent.Query)
 	return fmt.Errorf("unexpected query type %T. expect *ent.NotificationObjectIDQuery", q)
 }
 
-// The TokTokFunc type is an adapter to allow the use of ordinary function as a Querier.
-type TokTokFunc func(context.Context, *ent.TokTokQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f TokTokFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.TokTokQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TokTokQuery", q)
-}
-
-// The TraverseTokTok type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseTokTok func(context.Context, *ent.TokTokQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseTokTok) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseTokTok) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TokTokQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.TokTokQuery", q)
-}
-
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
 type UserFunc func(context.Context, *ent.UserQuery) (ent.Value, error)
 
@@ -240,14 +268,16 @@ func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.EntityTypeQuery:
 		return &query[*ent.EntityTypeQuery, predicate.EntityType, entitytype.OrderOption]{typ: ent.TypeEntityType, tq: q}, nil
+	case *ent.FriendshipQuery:
+		return &query[*ent.FriendshipQuery, predicate.Friendship, friendship.OrderOption]{typ: ent.TypeFriendship, tq: q}, nil
+	case *ent.FriendshipStatusQuery:
+		return &query[*ent.FriendshipStatusQuery, predicate.FriendshipStatus, friendshipstatus.OrderOption]{typ: ent.TypeFriendshipStatus, tq: q}, nil
 	case *ent.NotificationQuery:
 		return &query[*ent.NotificationQuery, predicate.Notification, notification.OrderOption]{typ: ent.TypeNotification, tq: q}, nil
 	case *ent.NotificationChangeQuery:
 		return &query[*ent.NotificationChangeQuery, predicate.NotificationChange, notificationchange.OrderOption]{typ: ent.TypeNotificationChange, tq: q}, nil
 	case *ent.NotificationObjectIDQuery:
 		return &query[*ent.NotificationObjectIDQuery, predicate.NotificationObjectID, notificationobjectid.OrderOption]{typ: ent.TypeNotificationObjectID, tq: q}, nil
-	case *ent.TokTokQuery:
-		return &query[*ent.TokTokQuery, predicate.TokTok, toktok.OrderOption]{typ: ent.TypeTokTok, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
 	default:

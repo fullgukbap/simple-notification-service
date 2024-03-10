@@ -6,10 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"notification-service/ent/friendship"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
 	"notification-service/ent/predicate"
-	"notification-service/ent/toktok"
 	"notification-service/ent/user"
 	"time"
 
@@ -65,34 +65,34 @@ func (uu *UserUpdate) SetNillableUsername(s *string) *UserUpdate {
 	return uu
 }
 
-// AddToktoksReceiverIDs adds the "toktoks_receiver" edge to the TokTok entity by IDs.
-func (uu *UserUpdate) AddToktoksReceiverIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddToktoksReceiverIDs(ids...)
+// AddFriendshipsReceiverIDs adds the "friendshipsReceiver" edge to the Friendship entity by IDs.
+func (uu *UserUpdate) AddFriendshipsReceiverIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddFriendshipsReceiverIDs(ids...)
 	return uu
 }
 
-// AddToktoksReceiver adds the "toktoks_receiver" edges to the TokTok entity.
-func (uu *UserUpdate) AddToktoksReceiver(t ...*TokTok) *UserUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// AddFriendshipsReceiver adds the "friendshipsReceiver" edges to the Friendship entity.
+func (uu *UserUpdate) AddFriendshipsReceiver(f ...*Friendship) *UserUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uu.AddToktoksReceiverIDs(ids...)
+	return uu.AddFriendshipsReceiverIDs(ids...)
 }
 
-// AddToktoksSenderIDs adds the "toktoks_sender" edge to the TokTok entity by IDs.
-func (uu *UserUpdate) AddToktoksSenderIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddToktoksSenderIDs(ids...)
+// AddFriendshipsSenderIDs adds the "friendshipsSender" edge to the Friendship entity by IDs.
+func (uu *UserUpdate) AddFriendshipsSenderIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddFriendshipsSenderIDs(ids...)
 	return uu
 }
 
-// AddToktoksSender adds the "toktoks_sender" edges to the TokTok entity.
-func (uu *UserUpdate) AddToktoksSender(t ...*TokTok) *UserUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// AddFriendshipsSender adds the "friendshipsSender" edges to the Friendship entity.
+func (uu *UserUpdate) AddFriendshipsSender(f ...*Friendship) *UserUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uu.AddToktoksSenderIDs(ids...)
+	return uu.AddFriendshipsSenderIDs(ids...)
 }
 
 // AddNotificationIDs adds the "notifications" edge to the Notification entity by IDs.
@@ -130,46 +130,46 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearToktoksReceiver clears all "toktoks_receiver" edges to the TokTok entity.
-func (uu *UserUpdate) ClearToktoksReceiver() *UserUpdate {
-	uu.mutation.ClearToktoksReceiver()
+// ClearFriendshipsReceiver clears all "friendshipsReceiver" edges to the Friendship entity.
+func (uu *UserUpdate) ClearFriendshipsReceiver() *UserUpdate {
+	uu.mutation.ClearFriendshipsReceiver()
 	return uu
 }
 
-// RemoveToktoksReceiverIDs removes the "toktoks_receiver" edge to TokTok entities by IDs.
-func (uu *UserUpdate) RemoveToktoksReceiverIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveToktoksReceiverIDs(ids...)
+// RemoveFriendshipsReceiverIDs removes the "friendshipsReceiver" edge to Friendship entities by IDs.
+func (uu *UserUpdate) RemoveFriendshipsReceiverIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveFriendshipsReceiverIDs(ids...)
 	return uu
 }
 
-// RemoveToktoksReceiver removes "toktoks_receiver" edges to TokTok entities.
-func (uu *UserUpdate) RemoveToktoksReceiver(t ...*TokTok) *UserUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// RemoveFriendshipsReceiver removes "friendshipsReceiver" edges to Friendship entities.
+func (uu *UserUpdate) RemoveFriendshipsReceiver(f ...*Friendship) *UserUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uu.RemoveToktoksReceiverIDs(ids...)
+	return uu.RemoveFriendshipsReceiverIDs(ids...)
 }
 
-// ClearToktoksSender clears all "toktoks_sender" edges to the TokTok entity.
-func (uu *UserUpdate) ClearToktoksSender() *UserUpdate {
-	uu.mutation.ClearToktoksSender()
+// ClearFriendshipsSender clears all "friendshipsSender" edges to the Friendship entity.
+func (uu *UserUpdate) ClearFriendshipsSender() *UserUpdate {
+	uu.mutation.ClearFriendshipsSender()
 	return uu
 }
 
-// RemoveToktoksSenderIDs removes the "toktoks_sender" edge to TokTok entities by IDs.
-func (uu *UserUpdate) RemoveToktoksSenderIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveToktoksSenderIDs(ids...)
+// RemoveFriendshipsSenderIDs removes the "friendshipsSender" edge to Friendship entities by IDs.
+func (uu *UserUpdate) RemoveFriendshipsSenderIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveFriendshipsSenderIDs(ids...)
 	return uu
 }
 
-// RemoveToktoksSender removes "toktoks_sender" edges to TokTok entities.
-func (uu *UserUpdate) RemoveToktoksSender(t ...*TokTok) *UserUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// RemoveFriendshipsSender removes "friendshipsSender" edges to Friendship entities.
+func (uu *UserUpdate) RemoveFriendshipsSender(f ...*Friendship) *UserUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uu.RemoveToktoksSenderIDs(ids...)
+	return uu.RemoveFriendshipsSenderIDs(ids...)
 }
 
 // ClearNotifications clears all "notifications" edges to the Notification entity.
@@ -259,28 +259,28 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 	}
-	if uu.mutation.ToktoksReceiverCleared() {
+	if uu.mutation.FriendshipsReceiverCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedToktoksReceiverIDs(); len(nodes) > 0 && !uu.mutation.ToktoksReceiverCleared() {
+	if nodes := uu.mutation.RemovedFriendshipsReceiverIDs(); len(nodes) > 0 && !uu.mutation.FriendshipsReceiverCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -288,15 +288,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.ToktoksReceiverIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.FriendshipsReceiverIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -304,28 +304,28 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.ToktoksSenderCleared() {
+	if uu.mutation.FriendshipsSenderCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedToktoksSenderIDs(); len(nodes) > 0 && !uu.mutation.ToktoksSenderCleared() {
+	if nodes := uu.mutation.RemovedFriendshipsSenderIDs(); len(nodes) > 0 && !uu.mutation.FriendshipsSenderCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -333,15 +333,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.ToktoksSenderIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.FriendshipsSenderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -493,34 +493,34 @@ func (uuo *UserUpdateOne) SetNillableUsername(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// AddToktoksReceiverIDs adds the "toktoks_receiver" edge to the TokTok entity by IDs.
-func (uuo *UserUpdateOne) AddToktoksReceiverIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddToktoksReceiverIDs(ids...)
+// AddFriendshipsReceiverIDs adds the "friendshipsReceiver" edge to the Friendship entity by IDs.
+func (uuo *UserUpdateOne) AddFriendshipsReceiverIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddFriendshipsReceiverIDs(ids...)
 	return uuo
 }
 
-// AddToktoksReceiver adds the "toktoks_receiver" edges to the TokTok entity.
-func (uuo *UserUpdateOne) AddToktoksReceiver(t ...*TokTok) *UserUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// AddFriendshipsReceiver adds the "friendshipsReceiver" edges to the Friendship entity.
+func (uuo *UserUpdateOne) AddFriendshipsReceiver(f ...*Friendship) *UserUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uuo.AddToktoksReceiverIDs(ids...)
+	return uuo.AddFriendshipsReceiverIDs(ids...)
 }
 
-// AddToktoksSenderIDs adds the "toktoks_sender" edge to the TokTok entity by IDs.
-func (uuo *UserUpdateOne) AddToktoksSenderIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddToktoksSenderIDs(ids...)
+// AddFriendshipsSenderIDs adds the "friendshipsSender" edge to the Friendship entity by IDs.
+func (uuo *UserUpdateOne) AddFriendshipsSenderIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddFriendshipsSenderIDs(ids...)
 	return uuo
 }
 
-// AddToktoksSender adds the "toktoks_sender" edges to the TokTok entity.
-func (uuo *UserUpdateOne) AddToktoksSender(t ...*TokTok) *UserUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// AddFriendshipsSender adds the "friendshipsSender" edges to the Friendship entity.
+func (uuo *UserUpdateOne) AddFriendshipsSender(f ...*Friendship) *UserUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uuo.AddToktoksSenderIDs(ids...)
+	return uuo.AddFriendshipsSenderIDs(ids...)
 }
 
 // AddNotificationIDs adds the "notifications" edge to the Notification entity by IDs.
@@ -558,46 +558,46 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearToktoksReceiver clears all "toktoks_receiver" edges to the TokTok entity.
-func (uuo *UserUpdateOne) ClearToktoksReceiver() *UserUpdateOne {
-	uuo.mutation.ClearToktoksReceiver()
+// ClearFriendshipsReceiver clears all "friendshipsReceiver" edges to the Friendship entity.
+func (uuo *UserUpdateOne) ClearFriendshipsReceiver() *UserUpdateOne {
+	uuo.mutation.ClearFriendshipsReceiver()
 	return uuo
 }
 
-// RemoveToktoksReceiverIDs removes the "toktoks_receiver" edge to TokTok entities by IDs.
-func (uuo *UserUpdateOne) RemoveToktoksReceiverIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveToktoksReceiverIDs(ids...)
+// RemoveFriendshipsReceiverIDs removes the "friendshipsReceiver" edge to Friendship entities by IDs.
+func (uuo *UserUpdateOne) RemoveFriendshipsReceiverIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveFriendshipsReceiverIDs(ids...)
 	return uuo
 }
 
-// RemoveToktoksReceiver removes "toktoks_receiver" edges to TokTok entities.
-func (uuo *UserUpdateOne) RemoveToktoksReceiver(t ...*TokTok) *UserUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// RemoveFriendshipsReceiver removes "friendshipsReceiver" edges to Friendship entities.
+func (uuo *UserUpdateOne) RemoveFriendshipsReceiver(f ...*Friendship) *UserUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uuo.RemoveToktoksReceiverIDs(ids...)
+	return uuo.RemoveFriendshipsReceiverIDs(ids...)
 }
 
-// ClearToktoksSender clears all "toktoks_sender" edges to the TokTok entity.
-func (uuo *UserUpdateOne) ClearToktoksSender() *UserUpdateOne {
-	uuo.mutation.ClearToktoksSender()
+// ClearFriendshipsSender clears all "friendshipsSender" edges to the Friendship entity.
+func (uuo *UserUpdateOne) ClearFriendshipsSender() *UserUpdateOne {
+	uuo.mutation.ClearFriendshipsSender()
 	return uuo
 }
 
-// RemoveToktoksSenderIDs removes the "toktoks_sender" edge to TokTok entities by IDs.
-func (uuo *UserUpdateOne) RemoveToktoksSenderIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveToktoksSenderIDs(ids...)
+// RemoveFriendshipsSenderIDs removes the "friendshipsSender" edge to Friendship entities by IDs.
+func (uuo *UserUpdateOne) RemoveFriendshipsSenderIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveFriendshipsSenderIDs(ids...)
 	return uuo
 }
 
-// RemoveToktoksSender removes "toktoks_sender" edges to TokTok entities.
-func (uuo *UserUpdateOne) RemoveToktoksSender(t ...*TokTok) *UserUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// RemoveFriendshipsSender removes "friendshipsSender" edges to Friendship entities.
+func (uuo *UserUpdateOne) RemoveFriendshipsSender(f ...*Friendship) *UserUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return uuo.RemoveToktoksSenderIDs(ids...)
+	return uuo.RemoveFriendshipsSenderIDs(ids...)
 }
 
 // ClearNotifications clears all "notifications" edges to the Notification entity.
@@ -717,28 +717,28 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 	}
-	if uuo.mutation.ToktoksReceiverCleared() {
+	if uuo.mutation.FriendshipsReceiverCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedToktoksReceiverIDs(); len(nodes) > 0 && !uuo.mutation.ToktoksReceiverCleared() {
+	if nodes := uuo.mutation.RemovedFriendshipsReceiverIDs(); len(nodes) > 0 && !uuo.mutation.FriendshipsReceiverCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -746,15 +746,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.ToktoksReceiverIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.FriendshipsReceiverIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksReceiverTable,
-			Columns: []string{user.ToktoksReceiverColumn},
+			Table:   user.FriendshipsReceiverTable,
+			Columns: []string{user.FriendshipsReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -762,28 +762,28 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.ToktoksSenderCleared() {
+	if uuo.mutation.FriendshipsSenderCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedToktoksSenderIDs(); len(nodes) > 0 && !uuo.mutation.ToktoksSenderCleared() {
+	if nodes := uuo.mutation.RemovedFriendshipsSenderIDs(); len(nodes) > 0 && !uuo.mutation.FriendshipsSenderCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -791,15 +791,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.ToktoksSenderIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.FriendshipsSenderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ToktoksSenderTable,
-			Columns: []string{user.ToktoksSenderColumn},
+			Table:   user.FriendshipsSenderTable,
+			Columns: []string{user.FriendshipsSenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(toktok.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -14,14 +14,16 @@ type Tx struct {
 	config
 	// EntityType is the client for interacting with the EntityType builders.
 	EntityType *EntityTypeClient
+	// Friendship is the client for interacting with the Friendship builders.
+	Friendship *FriendshipClient
+	// FriendshipStatus is the client for interacting with the FriendshipStatus builders.
+	FriendshipStatus *FriendshipStatusClient
 	// Notification is the client for interacting with the Notification builders.
 	Notification *NotificationClient
 	// NotificationChange is the client for interacting with the NotificationChange builders.
 	NotificationChange *NotificationChangeClient
 	// NotificationObjectID is the client for interacting with the NotificationObjectID builders.
 	NotificationObjectID *NotificationObjectIDClient
-	// TokTok is the client for interacting with the TokTok builders.
-	TokTok *TokTokClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -156,10 +158,11 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.EntityType = NewEntityTypeClient(tx.config)
+	tx.Friendship = NewFriendshipClient(tx.config)
+	tx.FriendshipStatus = NewFriendshipStatusClient(tx.config)
 	tx.Notification = NewNotificationClient(tx.config)
 	tx.NotificationChange = NewNotificationChangeClient(tx.config)
 	tx.NotificationObjectID = NewNotificationObjectIDClient(tx.config)
-	tx.TokTok = NewTokTokClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

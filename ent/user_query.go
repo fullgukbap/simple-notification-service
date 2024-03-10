@@ -7,10 +7,10 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
+	"notification-service/ent/friendship"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
 	"notification-service/ent/predicate"
-	"notification-service/ent/toktok"
 	"notification-service/ent/user"
 
 	"entgo.io/ent/dialect/sql"
@@ -25,8 +25,8 @@ type UserQuery struct {
 	order                   []user.OrderOption
 	inters                  []Interceptor
 	predicates              []predicate.User
-	withToktoksReceiver     *TokTokQuery
-	withToktoksSender       *TokTokQuery
+	withFriendshipsReceiver *FriendshipQuery
+	withFriendshipsSender   *FriendshipQuery
 	withNotifications       *NotificationQuery
 	withNotificationChanges *NotificationChangeQuery
 	// intermediate query (i.e. traversal path).
@@ -65,9 +65,9 @@ func (uq *UserQuery) Order(o ...user.OrderOption) *UserQuery {
 	return uq
 }
 
-// QueryToktoksReceiver chains the current query on the "toktoks_receiver" edge.
-func (uq *UserQuery) QueryToktoksReceiver() *TokTokQuery {
-	query := (&TokTokClient{config: uq.config}).Query()
+// QueryFriendshipsReceiver chains the current query on the "friendshipsReceiver" edge.
+func (uq *UserQuery) QueryFriendshipsReceiver() *FriendshipQuery {
+	query := (&FriendshipClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -78,8 +78,8 @@ func (uq *UserQuery) QueryToktoksReceiver() *TokTokQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(toktok.Table, toktok.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.ToktoksReceiverTable, user.ToktoksReceiverColumn),
+			sqlgraph.To(friendship.Table, friendship.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FriendshipsReceiverTable, user.FriendshipsReceiverColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -87,9 +87,9 @@ func (uq *UserQuery) QueryToktoksReceiver() *TokTokQuery {
 	return query
 }
 
-// QueryToktoksSender chains the current query on the "toktoks_sender" edge.
-func (uq *UserQuery) QueryToktoksSender() *TokTokQuery {
-	query := (&TokTokClient{config: uq.config}).Query()
+// QueryFriendshipsSender chains the current query on the "friendshipsSender" edge.
+func (uq *UserQuery) QueryFriendshipsSender() *FriendshipQuery {
+	query := (&FriendshipClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -100,8 +100,8 @@ func (uq *UserQuery) QueryToktoksSender() *TokTokQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(toktok.Table, toktok.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.ToktoksSenderTable, user.ToktoksSenderColumn),
+			sqlgraph.To(friendship.Table, friendship.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FriendshipsSenderTable, user.FriendshipsSenderColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -345,8 +345,8 @@ func (uq *UserQuery) Clone() *UserQuery {
 		order:                   append([]user.OrderOption{}, uq.order...),
 		inters:                  append([]Interceptor{}, uq.inters...),
 		predicates:              append([]predicate.User{}, uq.predicates...),
-		withToktoksReceiver:     uq.withToktoksReceiver.Clone(),
-		withToktoksSender:       uq.withToktoksSender.Clone(),
+		withFriendshipsReceiver: uq.withFriendshipsReceiver.Clone(),
+		withFriendshipsSender:   uq.withFriendshipsSender.Clone(),
 		withNotifications:       uq.withNotifications.Clone(),
 		withNotificationChanges: uq.withNotificationChanges.Clone(),
 		// clone intermediate query.
@@ -355,25 +355,25 @@ func (uq *UserQuery) Clone() *UserQuery {
 	}
 }
 
-// WithToktoksReceiver tells the query-builder to eager-load the nodes that are connected to
-// the "toktoks_receiver" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithToktoksReceiver(opts ...func(*TokTokQuery)) *UserQuery {
-	query := (&TokTokClient{config: uq.config}).Query()
+// WithFriendshipsReceiver tells the query-builder to eager-load the nodes that are connected to
+// the "friendshipsReceiver" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithFriendshipsReceiver(opts ...func(*FriendshipQuery)) *UserQuery {
+	query := (&FriendshipClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withToktoksReceiver = query
+	uq.withFriendshipsReceiver = query
 	return uq
 }
 
-// WithToktoksSender tells the query-builder to eager-load the nodes that are connected to
-// the "toktoks_sender" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithToktoksSender(opts ...func(*TokTokQuery)) *UserQuery {
-	query := (&TokTokClient{config: uq.config}).Query()
+// WithFriendshipsSender tells the query-builder to eager-load the nodes that are connected to
+// the "friendshipsSender" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithFriendshipsSender(opts ...func(*FriendshipQuery)) *UserQuery {
+	query := (&FriendshipClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withToktoksSender = query
+	uq.withFriendshipsSender = query
 	return uq
 }
 
@@ -478,8 +478,8 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
 		loadedTypes = [4]bool{
-			uq.withToktoksReceiver != nil,
-			uq.withToktoksSender != nil,
+			uq.withFriendshipsReceiver != nil,
+			uq.withFriendshipsSender != nil,
 			uq.withNotifications != nil,
 			uq.withNotificationChanges != nil,
 		}
@@ -502,17 +502,17 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := uq.withToktoksReceiver; query != nil {
-		if err := uq.loadToktoksReceiver(ctx, query, nodes,
-			func(n *User) { n.Edges.ToktoksReceiver = []*TokTok{} },
-			func(n *User, e *TokTok) { n.Edges.ToktoksReceiver = append(n.Edges.ToktoksReceiver, e) }); err != nil {
+	if query := uq.withFriendshipsReceiver; query != nil {
+		if err := uq.loadFriendshipsReceiver(ctx, query, nodes,
+			func(n *User) { n.Edges.FriendshipsReceiver = []*Friendship{} },
+			func(n *User, e *Friendship) { n.Edges.FriendshipsReceiver = append(n.Edges.FriendshipsReceiver, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := uq.withToktoksSender; query != nil {
-		if err := uq.loadToktoksSender(ctx, query, nodes,
-			func(n *User) { n.Edges.ToktoksSender = []*TokTok{} },
-			func(n *User, e *TokTok) { n.Edges.ToktoksSender = append(n.Edges.ToktoksSender, e) }); err != nil {
+	if query := uq.withFriendshipsSender; query != nil {
+		if err := uq.loadFriendshipsSender(ctx, query, nodes,
+			func(n *User) { n.Edges.FriendshipsSender = []*Friendship{} },
+			func(n *User, e *Friendship) { n.Edges.FriendshipsSender = append(n.Edges.FriendshipsSender, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -535,7 +535,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	return nodes, nil
 }
 
-func (uq *UserQuery) loadToktoksReceiver(ctx context.Context, query *TokTokQuery, nodes []*User, init func(*User), assign func(*User, *TokTok)) error {
+func (uq *UserQuery) loadFriendshipsReceiver(ctx context.Context, query *FriendshipQuery, nodes []*User, init func(*User), assign func(*User, *Friendship)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*User)
 	for i := range nodes {
@@ -546,27 +546,27 @@ func (uq *UserQuery) loadToktoksReceiver(ctx context.Context, query *TokTokQuery
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.TokTok(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.ToktoksReceiverColumn), fks...))
+	query.Where(predicate.Friendship(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.FriendshipsReceiverColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_toktoks_receiver
+		fk := n.user_friendships_receiver
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_toktoks_receiver" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_friendships_receiver" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_toktoks_receiver" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_friendships_receiver" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (uq *UserQuery) loadToktoksSender(ctx context.Context, query *TokTokQuery, nodes []*User, init func(*User), assign func(*User, *TokTok)) error {
+func (uq *UserQuery) loadFriendshipsSender(ctx context.Context, query *FriendshipQuery, nodes []*User, init func(*User), assign func(*User, *Friendship)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*User)
 	for i := range nodes {
@@ -577,21 +577,21 @@ func (uq *UserQuery) loadToktoksSender(ctx context.Context, query *TokTokQuery, 
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.TokTok(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.ToktoksSenderColumn), fks...))
+	query.Where(predicate.Friendship(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.FriendshipsSenderColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_toktoks_sender
+		fk := n.user_friendships_sender
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_toktoks_sender" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_friendships_sender" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_toktoks_sender" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_friendships_sender" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
