@@ -22,13 +22,13 @@ type Time struct {
 
 func (Time) Fields() []ent.Field {
 	return []ent.Field{
-		// field.Time("created_at").
-		// 	Immutable().
-		// 	Default(time.Now),
-		// field.Time("updated_at").
-		// 	Default(time.Now).
-		// 	UpdateDefault(time.Now),
-		field.Time("delete_time").
+		field.Time("created_at").
+			Immutable().
+			Default(time.Now),
+		field.Time("updated_at").
+			Default(time.Now).
+			UpdateDefault(time.Now),
+		field.Time("deleted_at").
 			Optional(),
 	}
 }
@@ -88,6 +88,6 @@ func (t Time) Hooks() []ent.Hook {
 // P adds a storage-level predicate to the queries and mutations.
 func (t Time) P(w interface{ WhereP(...func(*sql.Selector)) }) {
 	w.WhereP(
-		sql.FieldIsNull(t.Fields()[0].Descriptor().Name),
+		sql.FieldIsNull(t.Fields()[2].Descriptor().Name),
 	)
 }

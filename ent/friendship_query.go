@@ -19,14 +19,14 @@ import (
 // FriendshipQuery is the builder for querying Friendship entities.
 type FriendshipQuery struct {
 	config
-	ctx                    *QueryContext
-	order                  []friendship.OrderOption
-	inters                 []Interceptor
-	predicates             []predicate.Friendship
-	withSenderID           *UserQuery
-	withReceiverID         *UserQuery
-	withFriendshipStatusID *FriendshipStatusQuery
-	withFKs                bool
+	ctx                  *QueryContext
+	order                []friendship.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.Friendship
+	withSender           *UserQuery
+	withReceiver         *UserQuery
+	withFriendshipStatus *FriendshipStatusQuery
+	withFKs              bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,8 +63,8 @@ func (fq *FriendshipQuery) Order(o ...friendship.OrderOption) *FriendshipQuery {
 	return fq
 }
 
-// QuerySenderID chains the current query on the "senderID" edge.
-func (fq *FriendshipQuery) QuerySenderID() *UserQuery {
+// QuerySender chains the current query on the "sender" edge.
+func (fq *FriendshipQuery) QuerySender() *UserQuery {
 	query := (&UserClient{config: fq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := fq.prepareQuery(ctx); err != nil {
@@ -77,7 +77,7 @@ func (fq *FriendshipQuery) QuerySenderID() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(friendship.Table, friendship.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, friendship.SenderIDTable, friendship.SenderIDColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, friendship.SenderTable, friendship.SenderColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
 		return fromU, nil
@@ -85,8 +85,8 @@ func (fq *FriendshipQuery) QuerySenderID() *UserQuery {
 	return query
 }
 
-// QueryReceiverID chains the current query on the "receiverID" edge.
-func (fq *FriendshipQuery) QueryReceiverID() *UserQuery {
+// QueryReceiver chains the current query on the "receiver" edge.
+func (fq *FriendshipQuery) QueryReceiver() *UserQuery {
 	query := (&UserClient{config: fq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := fq.prepareQuery(ctx); err != nil {
@@ -99,7 +99,7 @@ func (fq *FriendshipQuery) QueryReceiverID() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(friendship.Table, friendship.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, friendship.ReceiverIDTable, friendship.ReceiverIDColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, friendship.ReceiverTable, friendship.ReceiverColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
 		return fromU, nil
@@ -107,8 +107,8 @@ func (fq *FriendshipQuery) QueryReceiverID() *UserQuery {
 	return query
 }
 
-// QueryFriendshipStatusID chains the current query on the "friendshipStatusID" edge.
-func (fq *FriendshipQuery) QueryFriendshipStatusID() *FriendshipStatusQuery {
+// QueryFriendshipStatus chains the current query on the "friendshipStatus" edge.
+func (fq *FriendshipQuery) QueryFriendshipStatus() *FriendshipStatusQuery {
 	query := (&FriendshipStatusClient{config: fq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := fq.prepareQuery(ctx); err != nil {
@@ -121,7 +121,7 @@ func (fq *FriendshipQuery) QueryFriendshipStatusID() *FriendshipStatusQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(friendship.Table, friendship.FieldID, selector),
 			sqlgraph.To(friendshipstatus.Table, friendshipstatus.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, friendship.FriendshipStatusIDTable, friendship.FriendshipStatusIDColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, friendship.FriendshipStatusTable, friendship.FriendshipStatusColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
 		return fromU, nil
@@ -316,50 +316,50 @@ func (fq *FriendshipQuery) Clone() *FriendshipQuery {
 		return nil
 	}
 	return &FriendshipQuery{
-		config:                 fq.config,
-		ctx:                    fq.ctx.Clone(),
-		order:                  append([]friendship.OrderOption{}, fq.order...),
-		inters:                 append([]Interceptor{}, fq.inters...),
-		predicates:             append([]predicate.Friendship{}, fq.predicates...),
-		withSenderID:           fq.withSenderID.Clone(),
-		withReceiverID:         fq.withReceiverID.Clone(),
-		withFriendshipStatusID: fq.withFriendshipStatusID.Clone(),
+		config:               fq.config,
+		ctx:                  fq.ctx.Clone(),
+		order:                append([]friendship.OrderOption{}, fq.order...),
+		inters:               append([]Interceptor{}, fq.inters...),
+		predicates:           append([]predicate.Friendship{}, fq.predicates...),
+		withSender:           fq.withSender.Clone(),
+		withReceiver:         fq.withReceiver.Clone(),
+		withFriendshipStatus: fq.withFriendshipStatus.Clone(),
 		// clone intermediate query.
 		sql:  fq.sql.Clone(),
 		path: fq.path,
 	}
 }
 
-// WithSenderID tells the query-builder to eager-load the nodes that are connected to
-// the "senderID" edge. The optional arguments are used to configure the query builder of the edge.
-func (fq *FriendshipQuery) WithSenderID(opts ...func(*UserQuery)) *FriendshipQuery {
+// WithSender tells the query-builder to eager-load the nodes that are connected to
+// the "sender" edge. The optional arguments are used to configure the query builder of the edge.
+func (fq *FriendshipQuery) WithSender(opts ...func(*UserQuery)) *FriendshipQuery {
 	query := (&UserClient{config: fq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fq.withSenderID = query
+	fq.withSender = query
 	return fq
 }
 
-// WithReceiverID tells the query-builder to eager-load the nodes that are connected to
-// the "receiverID" edge. The optional arguments are used to configure the query builder of the edge.
-func (fq *FriendshipQuery) WithReceiverID(opts ...func(*UserQuery)) *FriendshipQuery {
+// WithReceiver tells the query-builder to eager-load the nodes that are connected to
+// the "receiver" edge. The optional arguments are used to configure the query builder of the edge.
+func (fq *FriendshipQuery) WithReceiver(opts ...func(*UserQuery)) *FriendshipQuery {
 	query := (&UserClient{config: fq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fq.withReceiverID = query
+	fq.withReceiver = query
 	return fq
 }
 
-// WithFriendshipStatusID tells the query-builder to eager-load the nodes that are connected to
-// the "friendshipStatusID" edge. The optional arguments are used to configure the query builder of the edge.
-func (fq *FriendshipQuery) WithFriendshipStatusID(opts ...func(*FriendshipStatusQuery)) *FriendshipQuery {
+// WithFriendshipStatus tells the query-builder to eager-load the nodes that are connected to
+// the "friendshipStatus" edge. The optional arguments are used to configure the query builder of the edge.
+func (fq *FriendshipQuery) WithFriendshipStatus(opts ...func(*FriendshipStatusQuery)) *FriendshipQuery {
 	query := (&FriendshipStatusClient{config: fq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fq.withFriendshipStatusID = query
+	fq.withFriendshipStatus = query
 	return fq
 }
 
@@ -369,12 +369,12 @@ func (fq *FriendshipQuery) WithFriendshipStatusID(opts ...func(*FriendshipStatus
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Friendship.Query().
-//		GroupBy(friendship.FieldDeleteTime).
+//		GroupBy(friendship.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fq *FriendshipQuery) GroupBy(field string, fields ...string) *FriendshipGroupBy {
@@ -392,11 +392,11 @@ func (fq *FriendshipQuery) GroupBy(field string, fields ...string) *FriendshipGr
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Friendship.Query().
-//		Select(friendship.FieldDeleteTime).
+//		Select(friendship.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (fq *FriendshipQuery) Select(fields ...string) *FriendshipSelect {
 	fq.ctx.Fields = append(fq.ctx.Fields, fields...)
@@ -443,12 +443,12 @@ func (fq *FriendshipQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*F
 		withFKs     = fq.withFKs
 		_spec       = fq.querySpec()
 		loadedTypes = [3]bool{
-			fq.withSenderID != nil,
-			fq.withReceiverID != nil,
-			fq.withFriendshipStatusID != nil,
+			fq.withSender != nil,
+			fq.withReceiver != nil,
+			fq.withFriendshipStatus != nil,
 		}
 	)
-	if fq.withSenderID != nil || fq.withReceiverID != nil || fq.withFriendshipStatusID != nil {
+	if fq.withSender != nil || fq.withReceiver != nil || fq.withFriendshipStatus != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -472,28 +472,28 @@ func (fq *FriendshipQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*F
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := fq.withSenderID; query != nil {
-		if err := fq.loadSenderID(ctx, query, nodes, nil,
-			func(n *Friendship, e *User) { n.Edges.SenderID = e }); err != nil {
+	if query := fq.withSender; query != nil {
+		if err := fq.loadSender(ctx, query, nodes, nil,
+			func(n *Friendship, e *User) { n.Edges.Sender = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fq.withReceiverID; query != nil {
-		if err := fq.loadReceiverID(ctx, query, nodes, nil,
-			func(n *Friendship, e *User) { n.Edges.ReceiverID = e }); err != nil {
+	if query := fq.withReceiver; query != nil {
+		if err := fq.loadReceiver(ctx, query, nodes, nil,
+			func(n *Friendship, e *User) { n.Edges.Receiver = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fq.withFriendshipStatusID; query != nil {
-		if err := fq.loadFriendshipStatusID(ctx, query, nodes, nil,
-			func(n *Friendship, e *FriendshipStatus) { n.Edges.FriendshipStatusID = e }); err != nil {
+	if query := fq.withFriendshipStatus; query != nil {
+		if err := fq.loadFriendshipStatus(ctx, query, nodes, nil,
+			func(n *Friendship, e *FriendshipStatus) { n.Edges.FriendshipStatus = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (fq *FriendshipQuery) loadSenderID(ctx context.Context, query *UserQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *User)) error {
+func (fq *FriendshipQuery) loadSender(ctx context.Context, query *UserQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Friendship)
 	for i := range nodes {
@@ -525,7 +525,7 @@ func (fq *FriendshipQuery) loadSenderID(ctx context.Context, query *UserQuery, n
 	}
 	return nil
 }
-func (fq *FriendshipQuery) loadReceiverID(ctx context.Context, query *UserQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *User)) error {
+func (fq *FriendshipQuery) loadReceiver(ctx context.Context, query *UserQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Friendship)
 	for i := range nodes {
@@ -557,7 +557,7 @@ func (fq *FriendshipQuery) loadReceiverID(ctx context.Context, query *UserQuery,
 	}
 	return nil
 }
-func (fq *FriendshipQuery) loadFriendshipStatusID(ctx context.Context, query *FriendshipStatusQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *FriendshipStatus)) error {
+func (fq *FriendshipQuery) loadFriendshipStatus(ctx context.Context, query *FriendshipStatusQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *FriendshipStatus)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Friendship)
 	for i := range nodes {

@@ -11,7 +11,7 @@ import (
 	"notification-service/ent/friendshipstatus"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/user"
 	"reflect"
 	"sync"
@@ -79,13 +79,13 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			entitytype.Table:           entitytype.ValidColumn,
-			friendship.Table:           friendship.ValidColumn,
-			friendshipstatus.Table:     friendshipstatus.ValidColumn,
-			notification.Table:         notification.ValidColumn,
-			notificationchange.Table:   notificationchange.ValidColumn,
-			notificationobjectid.Table: notificationobjectid.ValidColumn,
-			user.Table:                 user.ValidColumn,
+			entitytype.Table:         entitytype.ValidColumn,
+			friendship.Table:         friendship.ValidColumn,
+			friendshipstatus.Table:   friendshipstatus.ValidColumn,
+			notification.Table:       notification.ValidColumn,
+			notificationchange.Table: notificationchange.ValidColumn,
+			notificationobject.Table: notificationobject.ValidColumn,
+			user.Table:               user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

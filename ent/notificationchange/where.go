@@ -55,76 +55,166 @@ func IDLTE(id int) predicate.NotificationChange {
 	return predicate.NotificationChange(sql.FieldLTE(FieldID, id))
 }
 
-// DeleteTime applies equality check predicate on the "delete_time" field. It's identical to DeleteTimeEQ.
-func DeleteTime(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldEQ(FieldDeleteTime, v))
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// DeleteTimeEQ applies the EQ predicate on the "delete_time" field.
-func DeleteTimeEQ(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldEQ(FieldDeleteTime, v))
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// DeleteTimeNEQ applies the NEQ predicate on the "delete_time" field.
-func DeleteTimeNEQ(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldNEQ(FieldDeleteTime, v))
+// DeletedAt applies equality check predicate on the "deleted_at" field. It's identical to DeletedAtEQ.
+func DeletedAt(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldEQ(FieldDeletedAt, v))
 }
 
-// DeleteTimeIn applies the In predicate on the "delete_time" field.
-func DeleteTimeIn(vs ...time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldIn(FieldDeleteTime, vs...))
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// DeleteTimeNotIn applies the NotIn predicate on the "delete_time" field.
-func DeleteTimeNotIn(vs ...time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldNotIn(FieldDeleteTime, vs...))
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNEQ(FieldCreatedAt, v))
 }
 
-// DeleteTimeGT applies the GT predicate on the "delete_time" field.
-func DeleteTimeGT(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldGT(FieldDeleteTime, v))
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldIn(FieldCreatedAt, vs...))
 }
 
-// DeleteTimeGTE applies the GTE predicate on the "delete_time" field.
-func DeleteTimeGTE(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldGTE(FieldDeleteTime, v))
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNotIn(FieldCreatedAt, vs...))
 }
 
-// DeleteTimeLT applies the LT predicate on the "delete_time" field.
-func DeleteTimeLT(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldLT(FieldDeleteTime, v))
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldGT(FieldCreatedAt, v))
 }
 
-// DeleteTimeLTE applies the LTE predicate on the "delete_time" field.
-func DeleteTimeLTE(v time.Time) predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldLTE(FieldDeleteTime, v))
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldGTE(FieldCreatedAt, v))
 }
 
-// DeleteTimeIsNil applies the IsNil predicate on the "delete_time" field.
-func DeleteTimeIsNil() predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldIsNull(FieldDeleteTime))
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldLT(FieldCreatedAt, v))
 }
 
-// DeleteTimeNotNil applies the NotNil predicate on the "delete_time" field.
-func DeleteTimeNotNil() predicate.NotificationChange {
-	return predicate.NotificationChange(sql.FieldNotNull(FieldDeleteTime))
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasUserID applies the HasEdge predicate on the "userID" edge.
-func HasUserID() predicate.NotificationChange {
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// DeletedAtEQ applies the EQ predicate on the "deleted_at" field.
+func DeletedAtEQ(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldEQ(FieldDeletedAt, v))
+}
+
+// DeletedAtNEQ applies the NEQ predicate on the "deleted_at" field.
+func DeletedAtNEQ(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNEQ(FieldDeletedAt, v))
+}
+
+// DeletedAtIn applies the In predicate on the "deleted_at" field.
+func DeletedAtIn(vs ...time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldIn(FieldDeletedAt, vs...))
+}
+
+// DeletedAtNotIn applies the NotIn predicate on the "deleted_at" field.
+func DeletedAtNotIn(vs ...time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNotIn(FieldDeletedAt, vs...))
+}
+
+// DeletedAtGT applies the GT predicate on the "deleted_at" field.
+func DeletedAtGT(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldGT(FieldDeletedAt, v))
+}
+
+// DeletedAtGTE applies the GTE predicate on the "deleted_at" field.
+func DeletedAtGTE(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldGTE(FieldDeletedAt, v))
+}
+
+// DeletedAtLT applies the LT predicate on the "deleted_at" field.
+func DeletedAtLT(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldLT(FieldDeletedAt, v))
+}
+
+// DeletedAtLTE applies the LTE predicate on the "deleted_at" field.
+func DeletedAtLTE(v time.Time) predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldLTE(FieldDeletedAt, v))
+}
+
+// DeletedAtIsNil applies the IsNil predicate on the "deleted_at" field.
+func DeletedAtIsNil() predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldIsNull(FieldDeletedAt))
+}
+
+// DeletedAtNotNil applies the NotNil predicate on the "deleted_at" field.
+func DeletedAtNotNil() predicate.NotificationChange {
+	return predicate.NotificationChange(sql.FieldNotNull(FieldDeletedAt))
+}
+
+// HasActor applies the HasEdge predicate on the "actor" edge.
+func HasActor() predicate.NotificationChange {
 	return predicate.NotificationChange(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, UserIDTable, UserIDColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, ActorTable, ActorColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasUserIDWith applies the HasEdge predicate on the "userID" edge with a given conditions (other predicates).
-func HasUserIDWith(preds ...predicate.User) predicate.NotificationChange {
+// HasActorWith applies the HasEdge predicate on the "actor" edge with a given conditions (other predicates).
+func HasActorWith(preds ...predicate.User) predicate.NotificationChange {
 	return predicate.NotificationChange(func(s *sql.Selector) {
-		step := newUserIDStep()
+		step := newActorStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -133,21 +223,21 @@ func HasUserIDWith(preds ...predicate.User) predicate.NotificationChange {
 	})
 }
 
-// HasNotificationObjectID applies the HasEdge predicate on the "notificationObjectID" edge.
-func HasNotificationObjectID() predicate.NotificationChange {
+// HasNotificationObject applies the HasEdge predicate on the "notificationObject" edge.
+func HasNotificationObject() predicate.NotificationChange {
 	return predicate.NotificationChange(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, NotificationObjectIDTable, NotificationObjectIDColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, NotificationObjectTable, NotificationObjectColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasNotificationObjectIDWith applies the HasEdge predicate on the "notificationObjectID" edge with a given conditions (other predicates).
-func HasNotificationObjectIDWith(preds ...predicate.NotificationObjectID) predicate.NotificationChange {
+// HasNotificationObjectWith applies the HasEdge predicate on the "notificationObject" edge with a given conditions (other predicates).
+func HasNotificationObjectWith(preds ...predicate.NotificationObject) predicate.NotificationChange {
 	return predicate.NotificationChange(func(s *sql.Selector) {
-		step := newNotificationObjectIDStep()
+		step := newNotificationObjectStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

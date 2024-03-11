@@ -11,7 +11,9 @@ var (
 	// EntityTypesColumns holds the columns for the "entity_types" table.
 	EntityTypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "entity_name", Type: field.TypeString},
 		{Name: "notification_description", Type: field.TypeString},
 	}
@@ -24,7 +26,9 @@ var (
 	// FriendshipsColumns holds the columns for the "friendships" table.
 	FriendshipsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "friendship_status_friendships", Type: field.TypeInt, Nullable: true},
 		{Name: "user_friendships_receiver", Type: field.TypeInt, Nullable: true},
 		{Name: "user_friendships_sender", Type: field.TypeInt, Nullable: true},
@@ -37,19 +41,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "friendships_friendship_status_friendships",
-				Columns:    []*schema.Column{FriendshipsColumns[2]},
+				Columns:    []*schema.Column{FriendshipsColumns[4]},
 				RefColumns: []*schema.Column{FriendshipStatusColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "friendships_users_friendshipsReceiver",
-				Columns:    []*schema.Column{FriendshipsColumns[3]},
+				Columns:    []*schema.Column{FriendshipsColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "friendships_users_friendshipsSender",
-				Columns:    []*schema.Column{FriendshipsColumns[4]},
+				Columns:    []*schema.Column{FriendshipsColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -58,7 +62,9 @@ var (
 	// FriendshipStatusColumns holds the columns for the "friendship_status" table.
 	FriendshipStatusColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "description", Type: field.TypeString, Unique: true},
 	}
 	// FriendshipStatusTable holds the schema information for the "friendship_status" table.
@@ -70,9 +76,11 @@ var (
 	// NotificationsColumns holds the columns for the "notifications" table.
 	NotificationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "is_read", Type: field.TypeBool, Default: false},
-		{Name: "notification_object_id_notifications", Type: field.TypeInt, Nullable: true},
+		{Name: "notification_object_notifications", Type: field.TypeInt, Nullable: true},
 		{Name: "user_notifications", Type: field.TypeInt, Nullable: true},
 	}
 	// NotificationsTable holds the schema information for the "notifications" table.
@@ -82,14 +90,14 @@ var (
 		PrimaryKey: []*schema.Column{NotificationsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "notifications_notification_object_ids_notifications",
-				Columns:    []*schema.Column{NotificationsColumns[3]},
-				RefColumns: []*schema.Column{NotificationObjectIdsColumns[0]},
+				Symbol:     "notifications_notification_objects_notifications",
+				Columns:    []*schema.Column{NotificationsColumns[5]},
+				RefColumns: []*schema.Column{NotificationObjectsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "notifications_users_notifications",
-				Columns:    []*schema.Column{NotificationsColumns[4]},
+				Columns:    []*schema.Column{NotificationsColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -98,8 +106,10 @@ var (
 	// NotificationChangesColumns holds the columns for the "notification_changes" table.
 	NotificationChangesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
-		{Name: "notification_object_id_notification_changes", Type: field.TypeInt, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "notification_object_notification_changes", Type: field.TypeInt, Nullable: true},
 		{Name: "user_notification_changes", Type: field.TypeInt, Nullable: true},
 	}
 	// NotificationChangesTable holds the schema information for the "notification_changes" table.
@@ -109,35 +119,37 @@ var (
 		PrimaryKey: []*schema.Column{NotificationChangesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "notification_changes_notification_object_ids_notificationChanges",
-				Columns:    []*schema.Column{NotificationChangesColumns[2]},
-				RefColumns: []*schema.Column{NotificationObjectIdsColumns[0]},
+				Symbol:     "notification_changes_notification_objects_notificationChanges",
+				Columns:    []*schema.Column{NotificationChangesColumns[4]},
+				RefColumns: []*schema.Column{NotificationObjectsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "notification_changes_users_notificationChanges",
-				Columns:    []*schema.Column{NotificationChangesColumns[3]},
+				Columns:    []*schema.Column{NotificationChangesColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 	}
-	// NotificationObjectIdsColumns holds the columns for the "notification_object_ids" table.
-	NotificationObjectIdsColumns = []*schema.Column{
+	// NotificationObjectsColumns holds the columns for the "notification_objects" table.
+	NotificationObjectsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "entity_id", Type: field.TypeInt},
-		{Name: "entity_type_notification_object_ids", Type: field.TypeInt, Nullable: true},
+		{Name: "entity_type_notification_objects", Type: field.TypeInt, Nullable: true},
 	}
-	// NotificationObjectIdsTable holds the schema information for the "notification_object_ids" table.
-	NotificationObjectIdsTable = &schema.Table{
-		Name:       "notification_object_ids",
-		Columns:    NotificationObjectIdsColumns,
-		PrimaryKey: []*schema.Column{NotificationObjectIdsColumns[0]},
+	// NotificationObjectsTable holds the schema information for the "notification_objects" table.
+	NotificationObjectsTable = &schema.Table{
+		Name:       "notification_objects",
+		Columns:    NotificationObjectsColumns,
+		PrimaryKey: []*schema.Column{NotificationObjectsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "notification_object_ids_entity_types_notificationObjectIDs",
-				Columns:    []*schema.Column{NotificationObjectIdsColumns[3]},
+				Symbol:     "notification_objects_entity_types_notificationObjects",
+				Columns:    []*schema.Column{NotificationObjectsColumns[5]},
 				RefColumns: []*schema.Column{EntityTypesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -146,7 +158,9 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
@@ -162,7 +176,7 @@ var (
 		FriendshipStatusTable,
 		NotificationsTable,
 		NotificationChangesTable,
-		NotificationObjectIdsTable,
+		NotificationObjectsTable,
 		UsersTable,
 	}
 )
@@ -171,9 +185,9 @@ func init() {
 	FriendshipsTable.ForeignKeys[0].RefTable = FriendshipStatusTable
 	FriendshipsTable.ForeignKeys[1].RefTable = UsersTable
 	FriendshipsTable.ForeignKeys[2].RefTable = UsersTable
-	NotificationsTable.ForeignKeys[0].RefTable = NotificationObjectIdsTable
+	NotificationsTable.ForeignKeys[0].RefTable = NotificationObjectsTable
 	NotificationsTable.ForeignKeys[1].RefTable = UsersTable
-	NotificationChangesTable.ForeignKeys[0].RefTable = NotificationObjectIdsTable
+	NotificationChangesTable.ForeignKeys[0].RefTable = NotificationObjectsTable
 	NotificationChangesTable.ForeignKeys[1].RefTable = UsersTable
-	NotificationObjectIdsTable.ForeignKeys[0].RefTable = EntityTypesTable
+	NotificationObjectsTable.ForeignKeys[0].RefTable = EntityTypesTable
 }

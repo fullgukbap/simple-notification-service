@@ -21,8 +21,8 @@ type Notification func(*sql.Selector)
 // NotificationChange is the predicate function for notificationchange builders.
 type NotificationChange func(*sql.Selector)
 
-// NotificationObjectID is the predicate function for notificationobjectid builders.
-type NotificationObjectID func(*sql.Selector)
+// NotificationObject is the predicate function for notificationobject builders.
+type NotificationObject func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

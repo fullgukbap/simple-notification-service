@@ -3,6 +3,8 @@
 package entitytype
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -13,29 +15,35 @@ const (
 	Label = "entity_type"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldDeleteTime holds the string denoting the delete_time field in the database.
-	FieldDeleteTime = "delete_time"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
+	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
+	FieldDeletedAt = "deleted_at"
 	// FieldEntityName holds the string denoting the entityname field in the database.
 	FieldEntityName = "entity_name"
 	// FieldNotificationDescription holds the string denoting the notificationdescription field in the database.
 	FieldNotificationDescription = "notification_description"
-	// EdgeNotificationObjectIDs holds the string denoting the notificationobjectids edge name in mutations.
-	EdgeNotificationObjectIDs = "notificationObjectIDs"
+	// EdgeNotificationObjects holds the string denoting the notificationobjects edge name in mutations.
+	EdgeNotificationObjects = "notificationObjects"
 	// Table holds the table name of the entitytype in the database.
 	Table = "entity_types"
-	// NotificationObjectIDsTable is the table that holds the notificationObjectIDs relation/edge.
-	NotificationObjectIDsTable = "notification_object_ids"
-	// NotificationObjectIDsInverseTable is the table name for the NotificationObjectID entity.
-	// It exists in this package in order to avoid circular dependency with the "notificationobjectid" package.
-	NotificationObjectIDsInverseTable = "notification_object_ids"
-	// NotificationObjectIDsColumn is the table column denoting the notificationObjectIDs relation/edge.
-	NotificationObjectIDsColumn = "entity_type_notification_object_ids"
+	// NotificationObjectsTable is the table that holds the notificationObjects relation/edge.
+	NotificationObjectsTable = "notification_objects"
+	// NotificationObjectsInverseTable is the table name for the NotificationObject entity.
+	// It exists in this package in order to avoid circular dependency with the "notificationobject" package.
+	NotificationObjectsInverseTable = "notification_objects"
+	// NotificationObjectsColumn is the table column denoting the notificationObjects relation/edge.
+	NotificationObjectsColumn = "entity_type_notification_objects"
 )
 
 // Columns holds all SQL columns for entitytype fields.
 var Columns = []string{
 	FieldID,
-	FieldDeleteTime,
+	FieldCreatedAt,
+	FieldUpdatedAt,
+	FieldDeletedAt,
 	FieldEntityName,
 	FieldNotificationDescription,
 }
@@ -58,6 +66,12 @@ func ValidColumn(column string) bool {
 var (
 	Hooks        [1]ent.Hook
 	Interceptors [1]ent.Interceptor
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 )
 
 // OrderOption defines the ordering options for the EntityType queries.
@@ -68,9 +82,19 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByDeleteTime orders the results by the delete_time field.
-func ByDeleteTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeleteTime, opts...).ToFunc()
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByDeletedAt orders the results by the deleted_at field.
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
 }
 
 // ByEntityName orders the results by the entityName field.
@@ -83,23 +107,23 @@ func ByNotificationDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNotificationDescription, opts...).ToFunc()
 }
 
-// ByNotificationObjectIDsCount orders the results by notificationObjectIDs count.
-func ByNotificationObjectIDsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByNotificationObjectsCount orders the results by notificationObjects count.
+func ByNotificationObjectsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newNotificationObjectIDsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newNotificationObjectsStep(), opts...)
 	}
 }
 
-// ByNotificationObjectIDs orders the results by notificationObjectIDs terms.
-func ByNotificationObjectIDs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByNotificationObjects orders the results by notificationObjects terms.
+func ByNotificationObjects(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newNotificationObjectIDsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newNotificationObjectsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newNotificationObjectIDsStep() *sqlgraph.Step {
+func newNotificationObjectsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(NotificationObjectIDsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, NotificationObjectIDsTable, NotificationObjectIDsColumn),
+		sqlgraph.To(NotificationObjectsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotificationObjectsTable, NotificationObjectsColumn),
 	)
 }

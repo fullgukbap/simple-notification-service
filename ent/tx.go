@@ -22,8 +22,8 @@ type Tx struct {
 	Notification *NotificationClient
 	// NotificationChange is the client for interacting with the NotificationChange builders.
 	NotificationChange *NotificationChangeClient
-	// NotificationObjectID is the client for interacting with the NotificationObjectID builders.
-	NotificationObjectID *NotificationObjectIDClient
+	// NotificationObject is the client for interacting with the NotificationObject builders.
+	NotificationObject *NotificationObjectClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -162,7 +162,7 @@ func (tx *Tx) init() {
 	tx.FriendshipStatus = NewFriendshipStatusClient(tx.config)
 	tx.Notification = NewNotificationClient(tx.config)
 	tx.NotificationChange = NewNotificationChangeClient(tx.config)
-	tx.NotificationObjectID = NewNotificationObjectIDClient(tx.config)
+	tx.NotificationObject = NewNotificationObjectClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

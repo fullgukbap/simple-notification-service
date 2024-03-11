@@ -68,16 +68,16 @@ func (f NotificationChangeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationChangeMutation", m)
 }
 
-// The NotificationObjectIDFunc type is an adapter to allow the use of ordinary
-// function as NotificationObjectID mutator.
-type NotificationObjectIDFunc func(context.Context, *ent.NotificationObjectIDMutation) (ent.Value, error)
+// The NotificationObjectFunc type is an adapter to allow the use of ordinary
+// function as NotificationObject mutator.
+type NotificationObjectFunc func(context.Context, *ent.NotificationObjectMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f NotificationObjectIDFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.NotificationObjectIDMutation); ok {
+func (f NotificationObjectFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotificationObjectMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationObjectIDMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationObjectMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary

@@ -19,8 +19,12 @@ type Friendship struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// DeleteTime holds the value of the "delete_time" field.
-	DeleteTime time.Time `json:"delete_time,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FriendshipQuery when eager-loading is set.
 	Edges                         FriendshipEdges `json:"edges"`
@@ -32,48 +36,48 @@ type Friendship struct {
 
 // FriendshipEdges holds the relations/edges for other nodes in the graph.
 type FriendshipEdges struct {
-	// SenderID holds the value of the senderID edge.
-	SenderID *User `json:"senderID,omitempty"`
-	// ReceiverID holds the value of the receiverID edge.
-	ReceiverID *User `json:"receiverID,omitempty"`
-	// FriendshipStatusID holds the value of the friendshipStatusID edge.
-	FriendshipStatusID *FriendshipStatus `json:"friendshipStatusID,omitempty"`
+	// Sender holds the value of the sender edge.
+	Sender *User `json:"sender,omitempty"`
+	// Receiver holds the value of the receiver edge.
+	Receiver *User `json:"receiver,omitempty"`
+	// FriendshipStatus holds the value of the friendshipStatus edge.
+	FriendshipStatus *FriendshipStatus `json:"friendshipStatus,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
 }
 
-// SenderIDOrErr returns the SenderID value or an error if the edge
+// SenderOrErr returns the Sender value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e FriendshipEdges) SenderIDOrErr() (*User, error) {
-	if e.SenderID != nil {
-		return e.SenderID, nil
+func (e FriendshipEdges) SenderOrErr() (*User, error) {
+	if e.Sender != nil {
+		return e.Sender, nil
 	} else if e.loadedTypes[0] {
 		return nil, &NotFoundError{label: user.Label}
 	}
-	return nil, &NotLoadedError{edge: "senderID"}
+	return nil, &NotLoadedError{edge: "sender"}
 }
 
-// ReceiverIDOrErr returns the ReceiverID value or an error if the edge
+// ReceiverOrErr returns the Receiver value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e FriendshipEdges) ReceiverIDOrErr() (*User, error) {
-	if e.ReceiverID != nil {
-		return e.ReceiverID, nil
+func (e FriendshipEdges) ReceiverOrErr() (*User, error) {
+	if e.Receiver != nil {
+		return e.Receiver, nil
 	} else if e.loadedTypes[1] {
 		return nil, &NotFoundError{label: user.Label}
 	}
-	return nil, &NotLoadedError{edge: "receiverID"}
+	return nil, &NotLoadedError{edge: "receiver"}
 }
 
-// FriendshipStatusIDOrErr returns the FriendshipStatusID value or an error if the edge
+// FriendshipStatusOrErr returns the FriendshipStatus value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e FriendshipEdges) FriendshipStatusIDOrErr() (*FriendshipStatus, error) {
-	if e.FriendshipStatusID != nil {
-		return e.FriendshipStatusID, nil
+func (e FriendshipEdges) FriendshipStatusOrErr() (*FriendshipStatus, error) {
+	if e.FriendshipStatus != nil {
+		return e.FriendshipStatus, nil
 	} else if e.loadedTypes[2] {
 		return nil, &NotFoundError{label: friendshipstatus.Label}
 	}
-	return nil, &NotLoadedError{edge: "friendshipStatusID"}
+	return nil, &NotLoadedError{edge: "friendshipStatus"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -83,7 +87,7 @@ func (*Friendship) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case friendship.FieldID:
 			values[i] = new(sql.NullInt64)
-		case friendship.FieldDeleteTime:
+		case friendship.FieldCreatedAt, friendship.FieldUpdatedAt, friendship.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		case friendship.ForeignKeys[0]: // friendship_status_friendships
 			values[i] = new(sql.NullInt64)
@@ -112,11 +116,23 @@ func (f *Friendship) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			f.ID = int(value.Int64)
-		case friendship.FieldDeleteTime:
+		case friendship.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				f.DeleteTime = value.Time
+				f.CreatedAt = value.Time
+			}
+		case friendship.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				f.UpdatedAt = value.Time
+			}
+		case friendship.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				f.DeletedAt = value.Time
 			}
 		case friendship.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -152,19 +168,19 @@ func (f *Friendship) Value(name string) (ent.Value, error) {
 	return f.selectValues.Get(name)
 }
 
-// QuerySenderID queries the "senderID" edge of the Friendship entity.
-func (f *Friendship) QuerySenderID() *UserQuery {
-	return NewFriendshipClient(f.config).QuerySenderID(f)
+// QuerySender queries the "sender" edge of the Friendship entity.
+func (f *Friendship) QuerySender() *UserQuery {
+	return NewFriendshipClient(f.config).QuerySender(f)
 }
 
-// QueryReceiverID queries the "receiverID" edge of the Friendship entity.
-func (f *Friendship) QueryReceiverID() *UserQuery {
-	return NewFriendshipClient(f.config).QueryReceiverID(f)
+// QueryReceiver queries the "receiver" edge of the Friendship entity.
+func (f *Friendship) QueryReceiver() *UserQuery {
+	return NewFriendshipClient(f.config).QueryReceiver(f)
 }
 
-// QueryFriendshipStatusID queries the "friendshipStatusID" edge of the Friendship entity.
-func (f *Friendship) QueryFriendshipStatusID() *FriendshipStatusQuery {
-	return NewFriendshipClient(f.config).QueryFriendshipStatusID(f)
+// QueryFriendshipStatus queries the "friendshipStatus" edge of the Friendship entity.
+func (f *Friendship) QueryFriendshipStatus() *FriendshipStatusQuery {
+	return NewFriendshipClient(f.config).QueryFriendshipStatus(f)
 }
 
 // Update returns a builder for updating this Friendship.
@@ -190,8 +206,14 @@ func (f *Friendship) String() string {
 	var builder strings.Builder
 	builder.WriteString("Friendship(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
-	builder.WriteString("delete_time=")
-	builder.WriteString(f.DeleteTime.Format(time.ANSIC))
+	builder.WriteString("created_at=")
+	builder.WriteString(f.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(f.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(f.DeletedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

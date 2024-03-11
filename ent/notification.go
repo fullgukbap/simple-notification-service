@@ -5,7 +5,7 @@ package ent
 import (
 	"fmt"
 	"notification-service/ent/notification"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/user"
 	"strings"
 	"time"
@@ -19,49 +19,53 @@ type Notification struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// DeleteTime holds the value of the "delete_time" field.
-	DeleteTime time.Time `json:"delete_time,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// IsRead holds the value of the "isRead" field.
 	IsRead bool `json:"isRead,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the NotificationQuery when eager-loading is set.
-	Edges                                NotificationEdges `json:"edges"`
-	notification_object_id_notifications *int
-	user_notifications                   *int
-	selectValues                         sql.SelectValues
+	Edges                             NotificationEdges `json:"edges"`
+	notification_object_notifications *int
+	user_notifications                *int
+	selectValues                      sql.SelectValues
 }
 
 // NotificationEdges holds the relations/edges for other nodes in the graph.
 type NotificationEdges struct {
-	// NotificationObjectID holds the value of the notificationObjectID edge.
-	NotificationObjectID *NotificationObjectID `json:"notificationObjectID,omitempty"`
-	// UserID holds the value of the userID edge.
-	UserID *User `json:"userID,omitempty"`
+	// NotificationObject holds the value of the notificationObject edge.
+	NotificationObject *NotificationObject `json:"notificationObject,omitempty"`
+	// Notifier holds the value of the notifier edge.
+	Notifier *User `json:"notifier,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
 }
 
-// NotificationObjectIDOrErr returns the NotificationObjectID value or an error if the edge
+// NotificationObjectOrErr returns the NotificationObject value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e NotificationEdges) NotificationObjectIDOrErr() (*NotificationObjectID, error) {
-	if e.NotificationObjectID != nil {
-		return e.NotificationObjectID, nil
+func (e NotificationEdges) NotificationObjectOrErr() (*NotificationObject, error) {
+	if e.NotificationObject != nil {
+		return e.NotificationObject, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: notificationobjectid.Label}
+		return nil, &NotFoundError{label: notificationobject.Label}
 	}
-	return nil, &NotLoadedError{edge: "notificationObjectID"}
+	return nil, &NotLoadedError{edge: "notificationObject"}
 }
 
-// UserIDOrErr returns the UserID value or an error if the edge
+// NotifierOrErr returns the Notifier value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e NotificationEdges) UserIDOrErr() (*User, error) {
-	if e.UserID != nil {
-		return e.UserID, nil
+func (e NotificationEdges) NotifierOrErr() (*User, error) {
+	if e.Notifier != nil {
+		return e.Notifier, nil
 	} else if e.loadedTypes[1] {
 		return nil, &NotFoundError{label: user.Label}
 	}
-	return nil, &NotLoadedError{edge: "userID"}
+	return nil, &NotLoadedError{edge: "notifier"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -73,9 +77,9 @@ func (*Notification) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case notification.FieldID:
 			values[i] = new(sql.NullInt64)
-		case notification.FieldDeleteTime:
+		case notification.FieldCreatedAt, notification.FieldUpdatedAt, notification.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
-		case notification.ForeignKeys[0]: // notification_object_id_notifications
+		case notification.ForeignKeys[0]: // notification_object_notifications
 			values[i] = new(sql.NullInt64)
 		case notification.ForeignKeys[1]: // user_notifications
 			values[i] = new(sql.NullInt64)
@@ -100,11 +104,23 @@ func (n *Notification) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			n.ID = int(value.Int64)
-		case notification.FieldDeleteTime:
+		case notification.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				n.DeleteTime = value.Time
+				n.CreatedAt = value.Time
+			}
+		case notification.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				n.UpdatedAt = value.Time
+			}
+		case notification.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				n.DeletedAt = value.Time
 			}
 		case notification.FieldIsRead:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -114,10 +130,10 @@ func (n *Notification) assignValues(columns []string, values []any) error {
 			}
 		case notification.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field notification_object_id_notifications", value)
+				return fmt.Errorf("unexpected type %T for edge-field notification_object_notifications", value)
 			} else if value.Valid {
-				n.notification_object_id_notifications = new(int)
-				*n.notification_object_id_notifications = int(value.Int64)
+				n.notification_object_notifications = new(int)
+				*n.notification_object_notifications = int(value.Int64)
 			}
 		case notification.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -139,14 +155,14 @@ func (n *Notification) Value(name string) (ent.Value, error) {
 	return n.selectValues.Get(name)
 }
 
-// QueryNotificationObjectID queries the "notificationObjectID" edge of the Notification entity.
-func (n *Notification) QueryNotificationObjectID() *NotificationObjectIDQuery {
-	return NewNotificationClient(n.config).QueryNotificationObjectID(n)
+// QueryNotificationObject queries the "notificationObject" edge of the Notification entity.
+func (n *Notification) QueryNotificationObject() *NotificationObjectQuery {
+	return NewNotificationClient(n.config).QueryNotificationObject(n)
 }
 
-// QueryUserID queries the "userID" edge of the Notification entity.
-func (n *Notification) QueryUserID() *UserQuery {
-	return NewNotificationClient(n.config).QueryUserID(n)
+// QueryNotifier queries the "notifier" edge of the Notification entity.
+func (n *Notification) QueryNotifier() *UserQuery {
+	return NewNotificationClient(n.config).QueryNotifier(n)
 }
 
 // Update returns a builder for updating this Notification.
@@ -172,8 +188,14 @@ func (n *Notification) String() string {
 	var builder strings.Builder
 	builder.WriteString("Notification(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", n.ID))
-	builder.WriteString("delete_time=")
-	builder.WriteString(n.DeleteTime.Format(time.ANSIC))
+	builder.WriteString("created_at=")
+	builder.WriteString(n.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(n.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(n.DeletedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("isRead=")
 	builder.WriteString(fmt.Sprintf("%v", n.IsRead))

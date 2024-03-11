@@ -3,6 +3,8 @@
 package notificationchange
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -13,40 +15,46 @@ const (
 	Label = "notification_change"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldDeleteTime holds the string denoting the delete_time field in the database.
-	FieldDeleteTime = "delete_time"
-	// EdgeUserID holds the string denoting the userid edge name in mutations.
-	EdgeUserID = "userID"
-	// EdgeNotificationObjectID holds the string denoting the notificationobjectid edge name in mutations.
-	EdgeNotificationObjectID = "notificationObjectID"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
+	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
+	FieldDeletedAt = "deleted_at"
+	// EdgeActor holds the string denoting the actor edge name in mutations.
+	EdgeActor = "actor"
+	// EdgeNotificationObject holds the string denoting the notificationobject edge name in mutations.
+	EdgeNotificationObject = "notificationObject"
 	// Table holds the table name of the notificationchange in the database.
 	Table = "notification_changes"
-	// UserIDTable is the table that holds the userID relation/edge.
-	UserIDTable = "notification_changes"
-	// UserIDInverseTable is the table name for the User entity.
+	// ActorTable is the table that holds the actor relation/edge.
+	ActorTable = "notification_changes"
+	// ActorInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	UserIDInverseTable = "users"
-	// UserIDColumn is the table column denoting the userID relation/edge.
-	UserIDColumn = "user_notification_changes"
-	// NotificationObjectIDTable is the table that holds the notificationObjectID relation/edge.
-	NotificationObjectIDTable = "notification_changes"
-	// NotificationObjectIDInverseTable is the table name for the NotificationObjectID entity.
-	// It exists in this package in order to avoid circular dependency with the "notificationobjectid" package.
-	NotificationObjectIDInverseTable = "notification_object_ids"
-	// NotificationObjectIDColumn is the table column denoting the notificationObjectID relation/edge.
-	NotificationObjectIDColumn = "notification_object_id_notification_changes"
+	ActorInverseTable = "users"
+	// ActorColumn is the table column denoting the actor relation/edge.
+	ActorColumn = "user_notification_changes"
+	// NotificationObjectTable is the table that holds the notificationObject relation/edge.
+	NotificationObjectTable = "notification_changes"
+	// NotificationObjectInverseTable is the table name for the NotificationObject entity.
+	// It exists in this package in order to avoid circular dependency with the "notificationobject" package.
+	NotificationObjectInverseTable = "notification_objects"
+	// NotificationObjectColumn is the table column denoting the notificationObject relation/edge.
+	NotificationObjectColumn = "notification_object_notification_changes"
 )
 
 // Columns holds all SQL columns for notificationchange fields.
 var Columns = []string{
 	FieldID,
-	FieldDeleteTime,
+	FieldCreatedAt,
+	FieldUpdatedAt,
+	FieldDeletedAt,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "notification_changes"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"notification_object_id_notification_changes",
+	"notification_object_notification_changes",
 	"user_notification_changes",
 }
 
@@ -73,6 +81,12 @@ func ValidColumn(column string) bool {
 var (
 	Hooks        [1]ent.Hook
 	Interceptors [1]ent.Interceptor
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 )
 
 // OrderOption defines the ordering options for the NotificationChange queries.
@@ -83,35 +97,45 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByDeleteTime orders the results by the delete_time field.
-func ByDeleteTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeleteTime, opts...).ToFunc()
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByUserIDField orders the results by userID field.
-func ByUserIDField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByDeletedAt orders the results by the deleted_at field.
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
+}
+
+// ByActorField orders the results by actor field.
+func ByActorField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newUserIDStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newActorStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByNotificationObjectIDField orders the results by notificationObjectID field.
-func ByNotificationObjectIDField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByNotificationObjectField orders the results by notificationObject field.
+func ByNotificationObjectField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newNotificationObjectIDStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newNotificationObjectStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newUserIDStep() *sqlgraph.Step {
+func newActorStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(UserIDInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, UserIDTable, UserIDColumn),
+		sqlgraph.To(ActorInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ActorTable, ActorColumn),
 	)
 }
-func newNotificationObjectIDStep() *sqlgraph.Step {
+func newNotificationObjectStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(NotificationObjectIDInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, NotificationObjectIDTable, NotificationObjectIDColumn),
+		sqlgraph.To(NotificationObjectInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, NotificationObjectTable, NotificationObjectColumn),
 	)
 }

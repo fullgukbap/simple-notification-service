@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"notification-service/ent/entitytype"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/predicate"
 	"time"
 
@@ -29,23 +29,29 @@ func (etu *EntityTypeUpdate) Where(ps ...predicate.EntityType) *EntityTypeUpdate
 	return etu
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (etu *EntityTypeUpdate) SetDeleteTime(t time.Time) *EntityTypeUpdate {
-	etu.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (etu *EntityTypeUpdate) SetUpdatedAt(t time.Time) *EntityTypeUpdate {
+	etu.mutation.SetUpdatedAt(t)
 	return etu
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (etu *EntityTypeUpdate) SetNillableDeleteTime(t *time.Time) *EntityTypeUpdate {
+// SetDeletedAt sets the "deleted_at" field.
+func (etu *EntityTypeUpdate) SetDeletedAt(t time.Time) *EntityTypeUpdate {
+	etu.mutation.SetDeletedAt(t)
+	return etu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (etu *EntityTypeUpdate) SetNillableDeletedAt(t *time.Time) *EntityTypeUpdate {
 	if t != nil {
-		etu.SetDeleteTime(*t)
+		etu.SetDeletedAt(*t)
 	}
 	return etu
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (etu *EntityTypeUpdate) ClearDeleteTime() *EntityTypeUpdate {
-	etu.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (etu *EntityTypeUpdate) ClearDeletedAt() *EntityTypeUpdate {
+	etu.mutation.ClearDeletedAt()
 	return etu
 }
 
@@ -77,19 +83,19 @@ func (etu *EntityTypeUpdate) SetNillableNotificationDescription(s *string) *Enti
 	return etu
 }
 
-// AddNotificationObjectIDIDs adds the "notificationObjectIDs" edge to the NotificationObjectID entity by IDs.
-func (etu *EntityTypeUpdate) AddNotificationObjectIDIDs(ids ...int) *EntityTypeUpdate {
-	etu.mutation.AddNotificationObjectIDIDs(ids...)
+// AddNotificationObjectIDs adds the "notificationObjects" edge to the NotificationObject entity by IDs.
+func (etu *EntityTypeUpdate) AddNotificationObjectIDs(ids ...int) *EntityTypeUpdate {
+	etu.mutation.AddNotificationObjectIDs(ids...)
 	return etu
 }
 
-// AddNotificationObjectIDs adds the "notificationObjectIDs" edges to the NotificationObjectID entity.
-func (etu *EntityTypeUpdate) AddNotificationObjectIDs(n ...*NotificationObjectID) *EntityTypeUpdate {
+// AddNotificationObjects adds the "notificationObjects" edges to the NotificationObject entity.
+func (etu *EntityTypeUpdate) AddNotificationObjects(n ...*NotificationObject) *EntityTypeUpdate {
 	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return etu.AddNotificationObjectIDIDs(ids...)
+	return etu.AddNotificationObjectIDs(ids...)
 }
 
 // Mutation returns the EntityTypeMutation object of the builder.
@@ -97,29 +103,32 @@ func (etu *EntityTypeUpdate) Mutation() *EntityTypeMutation {
 	return etu.mutation
 }
 
-// ClearNotificationObjectIDs clears all "notificationObjectIDs" edges to the NotificationObjectID entity.
-func (etu *EntityTypeUpdate) ClearNotificationObjectIDs() *EntityTypeUpdate {
-	etu.mutation.ClearNotificationObjectIDs()
+// ClearNotificationObjects clears all "notificationObjects" edges to the NotificationObject entity.
+func (etu *EntityTypeUpdate) ClearNotificationObjects() *EntityTypeUpdate {
+	etu.mutation.ClearNotificationObjects()
 	return etu
 }
 
-// RemoveNotificationObjectIDIDs removes the "notificationObjectIDs" edge to NotificationObjectID entities by IDs.
-func (etu *EntityTypeUpdate) RemoveNotificationObjectIDIDs(ids ...int) *EntityTypeUpdate {
-	etu.mutation.RemoveNotificationObjectIDIDs(ids...)
+// RemoveNotificationObjectIDs removes the "notificationObjects" edge to NotificationObject entities by IDs.
+func (etu *EntityTypeUpdate) RemoveNotificationObjectIDs(ids ...int) *EntityTypeUpdate {
+	etu.mutation.RemoveNotificationObjectIDs(ids...)
 	return etu
 }
 
-// RemoveNotificationObjectIDs removes "notificationObjectIDs" edges to NotificationObjectID entities.
-func (etu *EntityTypeUpdate) RemoveNotificationObjectIDs(n ...*NotificationObjectID) *EntityTypeUpdate {
+// RemoveNotificationObjects removes "notificationObjects" edges to NotificationObject entities.
+func (etu *EntityTypeUpdate) RemoveNotificationObjects(n ...*NotificationObject) *EntityTypeUpdate {
 	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return etu.RemoveNotificationObjectIDIDs(ids...)
+	return etu.RemoveNotificationObjectIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (etu *EntityTypeUpdate) Save(ctx context.Context) (int, error) {
+	if err := etu.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, etu.sqlSave, etu.mutation, etu.hooks)
 }
 
@@ -145,6 +154,18 @@ func (etu *EntityTypeUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (etu *EntityTypeUpdate) defaults() error {
+	if _, ok := etu.mutation.UpdatedAt(); !ok {
+		if entitytype.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized entitytype.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := entitytype.UpdateDefaultUpdatedAt()
+		etu.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 func (etu *EntityTypeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(entitytype.Table, entitytype.Columns, sqlgraph.NewFieldSpec(entitytype.FieldID, field.TypeInt))
 	if ps := etu.mutation.predicates; len(ps) > 0 {
@@ -154,11 +175,14 @@ func (etu *EntityTypeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := etu.mutation.DeleteTime(); ok {
-		_spec.SetField(entitytype.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := etu.mutation.UpdatedAt(); ok {
+		_spec.SetField(entitytype.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if etu.mutation.DeleteTimeCleared() {
-		_spec.ClearField(entitytype.FieldDeleteTime, field.TypeTime)
+	if value, ok := etu.mutation.DeletedAt(); ok {
+		_spec.SetField(entitytype.FieldDeletedAt, field.TypeTime, value)
+	}
+	if etu.mutation.DeletedAtCleared() {
+		_spec.ClearField(entitytype.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := etu.mutation.EntityName(); ok {
 		_spec.SetField(entitytype.FieldEntityName, field.TypeString, value)
@@ -166,28 +190,28 @@ func (etu *EntityTypeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := etu.mutation.NotificationDescription(); ok {
 		_spec.SetField(entitytype.FieldNotificationDescription, field.TypeString, value)
 	}
-	if etu.mutation.NotificationObjectIDsCleared() {
+	if etu.mutation.NotificationObjectsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := etu.mutation.RemovedNotificationObjectIDsIDs(); len(nodes) > 0 && !etu.mutation.NotificationObjectIDsCleared() {
+	if nodes := etu.mutation.RemovedNotificationObjectsIDs(); len(nodes) > 0 && !etu.mutation.NotificationObjectsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -195,15 +219,15 @@ func (etu *EntityTypeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := etu.mutation.NotificationObjectIDsIDs(); len(nodes) > 0 {
+	if nodes := etu.mutation.NotificationObjectsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -231,23 +255,29 @@ type EntityTypeUpdateOne struct {
 	mutation *EntityTypeMutation
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (etuo *EntityTypeUpdateOne) SetDeleteTime(t time.Time) *EntityTypeUpdateOne {
-	etuo.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (etuo *EntityTypeUpdateOne) SetUpdatedAt(t time.Time) *EntityTypeUpdateOne {
+	etuo.mutation.SetUpdatedAt(t)
 	return etuo
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (etuo *EntityTypeUpdateOne) SetNillableDeleteTime(t *time.Time) *EntityTypeUpdateOne {
+// SetDeletedAt sets the "deleted_at" field.
+func (etuo *EntityTypeUpdateOne) SetDeletedAt(t time.Time) *EntityTypeUpdateOne {
+	etuo.mutation.SetDeletedAt(t)
+	return etuo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (etuo *EntityTypeUpdateOne) SetNillableDeletedAt(t *time.Time) *EntityTypeUpdateOne {
 	if t != nil {
-		etuo.SetDeleteTime(*t)
+		etuo.SetDeletedAt(*t)
 	}
 	return etuo
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (etuo *EntityTypeUpdateOne) ClearDeleteTime() *EntityTypeUpdateOne {
-	etuo.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (etuo *EntityTypeUpdateOne) ClearDeletedAt() *EntityTypeUpdateOne {
+	etuo.mutation.ClearDeletedAt()
 	return etuo
 }
 
@@ -279,19 +309,19 @@ func (etuo *EntityTypeUpdateOne) SetNillableNotificationDescription(s *string) *
 	return etuo
 }
 
-// AddNotificationObjectIDIDs adds the "notificationObjectIDs" edge to the NotificationObjectID entity by IDs.
-func (etuo *EntityTypeUpdateOne) AddNotificationObjectIDIDs(ids ...int) *EntityTypeUpdateOne {
-	etuo.mutation.AddNotificationObjectIDIDs(ids...)
+// AddNotificationObjectIDs adds the "notificationObjects" edge to the NotificationObject entity by IDs.
+func (etuo *EntityTypeUpdateOne) AddNotificationObjectIDs(ids ...int) *EntityTypeUpdateOne {
+	etuo.mutation.AddNotificationObjectIDs(ids...)
 	return etuo
 }
 
-// AddNotificationObjectIDs adds the "notificationObjectIDs" edges to the NotificationObjectID entity.
-func (etuo *EntityTypeUpdateOne) AddNotificationObjectIDs(n ...*NotificationObjectID) *EntityTypeUpdateOne {
+// AddNotificationObjects adds the "notificationObjects" edges to the NotificationObject entity.
+func (etuo *EntityTypeUpdateOne) AddNotificationObjects(n ...*NotificationObject) *EntityTypeUpdateOne {
 	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return etuo.AddNotificationObjectIDIDs(ids...)
+	return etuo.AddNotificationObjectIDs(ids...)
 }
 
 // Mutation returns the EntityTypeMutation object of the builder.
@@ -299,25 +329,25 @@ func (etuo *EntityTypeUpdateOne) Mutation() *EntityTypeMutation {
 	return etuo.mutation
 }
 
-// ClearNotificationObjectIDs clears all "notificationObjectIDs" edges to the NotificationObjectID entity.
-func (etuo *EntityTypeUpdateOne) ClearNotificationObjectIDs() *EntityTypeUpdateOne {
-	etuo.mutation.ClearNotificationObjectIDs()
+// ClearNotificationObjects clears all "notificationObjects" edges to the NotificationObject entity.
+func (etuo *EntityTypeUpdateOne) ClearNotificationObjects() *EntityTypeUpdateOne {
+	etuo.mutation.ClearNotificationObjects()
 	return etuo
 }
 
-// RemoveNotificationObjectIDIDs removes the "notificationObjectIDs" edge to NotificationObjectID entities by IDs.
-func (etuo *EntityTypeUpdateOne) RemoveNotificationObjectIDIDs(ids ...int) *EntityTypeUpdateOne {
-	etuo.mutation.RemoveNotificationObjectIDIDs(ids...)
+// RemoveNotificationObjectIDs removes the "notificationObjects" edge to NotificationObject entities by IDs.
+func (etuo *EntityTypeUpdateOne) RemoveNotificationObjectIDs(ids ...int) *EntityTypeUpdateOne {
+	etuo.mutation.RemoveNotificationObjectIDs(ids...)
 	return etuo
 }
 
-// RemoveNotificationObjectIDs removes "notificationObjectIDs" edges to NotificationObjectID entities.
-func (etuo *EntityTypeUpdateOne) RemoveNotificationObjectIDs(n ...*NotificationObjectID) *EntityTypeUpdateOne {
+// RemoveNotificationObjects removes "notificationObjects" edges to NotificationObject entities.
+func (etuo *EntityTypeUpdateOne) RemoveNotificationObjects(n ...*NotificationObject) *EntityTypeUpdateOne {
 	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return etuo.RemoveNotificationObjectIDIDs(ids...)
+	return etuo.RemoveNotificationObjectIDs(ids...)
 }
 
 // Where appends a list predicates to the EntityTypeUpdate builder.
@@ -335,6 +365,9 @@ func (etuo *EntityTypeUpdateOne) Select(field string, fields ...string) *EntityT
 
 // Save executes the query and returns the updated EntityType entity.
 func (etuo *EntityTypeUpdateOne) Save(ctx context.Context) (*EntityType, error) {
+	if err := etuo.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, etuo.sqlSave, etuo.mutation, etuo.hooks)
 }
 
@@ -358,6 +391,18 @@ func (etuo *EntityTypeUpdateOne) ExecX(ctx context.Context) {
 	if err := etuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// defaults sets the default values of the builder before save.
+func (etuo *EntityTypeUpdateOne) defaults() error {
+	if _, ok := etuo.mutation.UpdatedAt(); !ok {
+		if entitytype.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized entitytype.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := entitytype.UpdateDefaultUpdatedAt()
+		etuo.mutation.SetUpdatedAt(v)
+	}
+	return nil
 }
 
 func (etuo *EntityTypeUpdateOne) sqlSave(ctx context.Context) (_node *EntityType, err error) {
@@ -386,11 +431,14 @@ func (etuo *EntityTypeUpdateOne) sqlSave(ctx context.Context) (_node *EntityType
 			}
 		}
 	}
-	if value, ok := etuo.mutation.DeleteTime(); ok {
-		_spec.SetField(entitytype.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := etuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(entitytype.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if etuo.mutation.DeleteTimeCleared() {
-		_spec.ClearField(entitytype.FieldDeleteTime, field.TypeTime)
+	if value, ok := etuo.mutation.DeletedAt(); ok {
+		_spec.SetField(entitytype.FieldDeletedAt, field.TypeTime, value)
+	}
+	if etuo.mutation.DeletedAtCleared() {
+		_spec.ClearField(entitytype.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := etuo.mutation.EntityName(); ok {
 		_spec.SetField(entitytype.FieldEntityName, field.TypeString, value)
@@ -398,28 +446,28 @@ func (etuo *EntityTypeUpdateOne) sqlSave(ctx context.Context) (_node *EntityType
 	if value, ok := etuo.mutation.NotificationDescription(); ok {
 		_spec.SetField(entitytype.FieldNotificationDescription, field.TypeString, value)
 	}
-	if etuo.mutation.NotificationObjectIDsCleared() {
+	if etuo.mutation.NotificationObjectsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := etuo.mutation.RemovedNotificationObjectIDsIDs(); len(nodes) > 0 && !etuo.mutation.NotificationObjectIDsCleared() {
+	if nodes := etuo.mutation.RemovedNotificationObjectsIDs(); len(nodes) > 0 && !etuo.mutation.NotificationObjectsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -427,15 +475,15 @@ func (etuo *EntityTypeUpdateOne) sqlSave(ctx context.Context) (_node *EntityType
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := etuo.mutation.NotificationObjectIDsIDs(); len(nodes) > 0 {
+	if nodes := etuo.mutation.NotificationObjectsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

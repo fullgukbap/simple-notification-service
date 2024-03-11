@@ -30,6 +30,6 @@ func (EntityType) Fields() []ent.Field {
 // Edges of the EntityType.
 func (EntityType) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("notificationObjectIDs", NotificationObjectID.Type),
+		edge.To("notificationObjects", NotificationObject.Type),
 	}
 }

@@ -30,11 +30,11 @@ func (Notification) Fields() []ent.Field {
 // Edges of the Notification.
 func (Notification) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("notificationObjectID", NotificationObjectID.Type).
+		edge.From("notificationObject", NotificationObject.Type).
 			Ref("notifications").
 			Unique(),
 
-		edge.From("userID", User.Type).
+		edge.From("notifier", User.Type).
 			Ref("notifications").
 			Unique(),
 	}

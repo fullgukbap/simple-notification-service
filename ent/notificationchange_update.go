@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"notification-service/ent/notificationchange"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/predicate"
 	"notification-service/ent/user"
 	"time"
@@ -30,62 +30,68 @@ func (ncu *NotificationChangeUpdate) Where(ps ...predicate.NotificationChange) *
 	return ncu
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (ncu *NotificationChangeUpdate) SetDeleteTime(t time.Time) *NotificationChangeUpdate {
-	ncu.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (ncu *NotificationChangeUpdate) SetUpdatedAt(t time.Time) *NotificationChangeUpdate {
+	ncu.mutation.SetUpdatedAt(t)
 	return ncu
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (ncu *NotificationChangeUpdate) SetNillableDeleteTime(t *time.Time) *NotificationChangeUpdate {
+// SetDeletedAt sets the "deleted_at" field.
+func (ncu *NotificationChangeUpdate) SetDeletedAt(t time.Time) *NotificationChangeUpdate {
+	ncu.mutation.SetDeletedAt(t)
+	return ncu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (ncu *NotificationChangeUpdate) SetNillableDeletedAt(t *time.Time) *NotificationChangeUpdate {
 	if t != nil {
-		ncu.SetDeleteTime(*t)
+		ncu.SetDeletedAt(*t)
 	}
 	return ncu
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (ncu *NotificationChangeUpdate) ClearDeleteTime() *NotificationChangeUpdate {
-	ncu.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (ncu *NotificationChangeUpdate) ClearDeletedAt() *NotificationChangeUpdate {
+	ncu.mutation.ClearDeletedAt()
 	return ncu
 }
 
-// SetUserIDID sets the "userID" edge to the User entity by ID.
-func (ncu *NotificationChangeUpdate) SetUserIDID(id int) *NotificationChangeUpdate {
-	ncu.mutation.SetUserIDID(id)
+// SetActorID sets the "actor" edge to the User entity by ID.
+func (ncu *NotificationChangeUpdate) SetActorID(id int) *NotificationChangeUpdate {
+	ncu.mutation.SetActorID(id)
 	return ncu
 }
 
-// SetNillableUserIDID sets the "userID" edge to the User entity by ID if the given value is not nil.
-func (ncu *NotificationChangeUpdate) SetNillableUserIDID(id *int) *NotificationChangeUpdate {
+// SetNillableActorID sets the "actor" edge to the User entity by ID if the given value is not nil.
+func (ncu *NotificationChangeUpdate) SetNillableActorID(id *int) *NotificationChangeUpdate {
 	if id != nil {
-		ncu = ncu.SetUserIDID(*id)
+		ncu = ncu.SetActorID(*id)
 	}
 	return ncu
 }
 
-// SetUserID sets the "userID" edge to the User entity.
-func (ncu *NotificationChangeUpdate) SetUserID(u *User) *NotificationChangeUpdate {
-	return ncu.SetUserIDID(u.ID)
+// SetActor sets the "actor" edge to the User entity.
+func (ncu *NotificationChangeUpdate) SetActor(u *User) *NotificationChangeUpdate {
+	return ncu.SetActorID(u.ID)
 }
 
-// SetNotificationObjectIDID sets the "notificationObjectID" edge to the NotificationObjectID entity by ID.
-func (ncu *NotificationChangeUpdate) SetNotificationObjectIDID(id int) *NotificationChangeUpdate {
-	ncu.mutation.SetNotificationObjectIDID(id)
+// SetNotificationObjectID sets the "notificationObject" edge to the NotificationObject entity by ID.
+func (ncu *NotificationChangeUpdate) SetNotificationObjectID(id int) *NotificationChangeUpdate {
+	ncu.mutation.SetNotificationObjectID(id)
 	return ncu
 }
 
-// SetNillableNotificationObjectIDID sets the "notificationObjectID" edge to the NotificationObjectID entity by ID if the given value is not nil.
-func (ncu *NotificationChangeUpdate) SetNillableNotificationObjectIDID(id *int) *NotificationChangeUpdate {
+// SetNillableNotificationObjectID sets the "notificationObject" edge to the NotificationObject entity by ID if the given value is not nil.
+func (ncu *NotificationChangeUpdate) SetNillableNotificationObjectID(id *int) *NotificationChangeUpdate {
 	if id != nil {
-		ncu = ncu.SetNotificationObjectIDID(*id)
+		ncu = ncu.SetNotificationObjectID(*id)
 	}
 	return ncu
 }
 
-// SetNotificationObjectID sets the "notificationObjectID" edge to the NotificationObjectID entity.
-func (ncu *NotificationChangeUpdate) SetNotificationObjectID(n *NotificationObjectID) *NotificationChangeUpdate {
-	return ncu.SetNotificationObjectIDID(n.ID)
+// SetNotificationObject sets the "notificationObject" edge to the NotificationObject entity.
+func (ncu *NotificationChangeUpdate) SetNotificationObject(n *NotificationObject) *NotificationChangeUpdate {
+	return ncu.SetNotificationObjectID(n.ID)
 }
 
 // Mutation returns the NotificationChangeMutation object of the builder.
@@ -93,20 +99,23 @@ func (ncu *NotificationChangeUpdate) Mutation() *NotificationChangeMutation {
 	return ncu.mutation
 }
 
-// ClearUserID clears the "userID" edge to the User entity.
-func (ncu *NotificationChangeUpdate) ClearUserID() *NotificationChangeUpdate {
-	ncu.mutation.ClearUserID()
+// ClearActor clears the "actor" edge to the User entity.
+func (ncu *NotificationChangeUpdate) ClearActor() *NotificationChangeUpdate {
+	ncu.mutation.ClearActor()
 	return ncu
 }
 
-// ClearNotificationObjectID clears the "notificationObjectID" edge to the NotificationObjectID entity.
-func (ncu *NotificationChangeUpdate) ClearNotificationObjectID() *NotificationChangeUpdate {
-	ncu.mutation.ClearNotificationObjectID()
+// ClearNotificationObject clears the "notificationObject" edge to the NotificationObject entity.
+func (ncu *NotificationChangeUpdate) ClearNotificationObject() *NotificationChangeUpdate {
+	ncu.mutation.ClearNotificationObject()
 	return ncu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ncu *NotificationChangeUpdate) Save(ctx context.Context) (int, error) {
+	if err := ncu.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, ncu.sqlSave, ncu.mutation, ncu.hooks)
 }
 
@@ -132,6 +141,18 @@ func (ncu *NotificationChangeUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ncu *NotificationChangeUpdate) defaults() error {
+	if _, ok := ncu.mutation.UpdatedAt(); !ok {
+		if notificationchange.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized notificationchange.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := notificationchange.UpdateDefaultUpdatedAt()
+		ncu.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 func (ncu *NotificationChangeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(notificationchange.Table, notificationchange.Columns, sqlgraph.NewFieldSpec(notificationchange.FieldID, field.TypeInt))
 	if ps := ncu.mutation.predicates; len(ps) > 0 {
@@ -141,18 +162,21 @@ func (ncu *NotificationChangeUpdate) sqlSave(ctx context.Context) (n int, err er
 			}
 		}
 	}
-	if value, ok := ncu.mutation.DeleteTime(); ok {
-		_spec.SetField(notificationchange.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := ncu.mutation.UpdatedAt(); ok {
+		_spec.SetField(notificationchange.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ncu.mutation.DeleteTimeCleared() {
-		_spec.ClearField(notificationchange.FieldDeleteTime, field.TypeTime)
+	if value, ok := ncu.mutation.DeletedAt(); ok {
+		_spec.SetField(notificationchange.FieldDeletedAt, field.TypeTime, value)
 	}
-	if ncu.mutation.UserIDCleared() {
+	if ncu.mutation.DeletedAtCleared() {
+		_spec.ClearField(notificationchange.FieldDeletedAt, field.TypeTime)
+	}
+	if ncu.mutation.ActorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.UserIDTable,
-			Columns: []string{notificationchange.UserIDColumn},
+			Table:   notificationchange.ActorTable,
+			Columns: []string{notificationchange.ActorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -160,12 +184,12 @@ func (ncu *NotificationChangeUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ncu.mutation.UserIDIDs(); len(nodes) > 0 {
+	if nodes := ncu.mutation.ActorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.UserIDTable,
-			Columns: []string{notificationchange.UserIDColumn},
+			Table:   notificationchange.ActorTable,
+			Columns: []string{notificationchange.ActorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -176,28 +200,28 @@ func (ncu *NotificationChangeUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ncu.mutation.NotificationObjectIDCleared() {
+	if ncu.mutation.NotificationObjectCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.NotificationObjectIDTable,
-			Columns: []string{notificationchange.NotificationObjectIDColumn},
+			Table:   notificationchange.NotificationObjectTable,
+			Columns: []string{notificationchange.NotificationObjectColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ncu.mutation.NotificationObjectIDIDs(); len(nodes) > 0 {
+	if nodes := ncu.mutation.NotificationObjectIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.NotificationObjectIDTable,
-			Columns: []string{notificationchange.NotificationObjectIDColumn},
+			Table:   notificationchange.NotificationObjectTable,
+			Columns: []string{notificationchange.NotificationObjectColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -225,62 +249,68 @@ type NotificationChangeUpdateOne struct {
 	mutation *NotificationChangeMutation
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (ncuo *NotificationChangeUpdateOne) SetDeleteTime(t time.Time) *NotificationChangeUpdateOne {
-	ncuo.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (ncuo *NotificationChangeUpdateOne) SetUpdatedAt(t time.Time) *NotificationChangeUpdateOne {
+	ncuo.mutation.SetUpdatedAt(t)
 	return ncuo
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (ncuo *NotificationChangeUpdateOne) SetNillableDeleteTime(t *time.Time) *NotificationChangeUpdateOne {
+// SetDeletedAt sets the "deleted_at" field.
+func (ncuo *NotificationChangeUpdateOne) SetDeletedAt(t time.Time) *NotificationChangeUpdateOne {
+	ncuo.mutation.SetDeletedAt(t)
+	return ncuo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (ncuo *NotificationChangeUpdateOne) SetNillableDeletedAt(t *time.Time) *NotificationChangeUpdateOne {
 	if t != nil {
-		ncuo.SetDeleteTime(*t)
+		ncuo.SetDeletedAt(*t)
 	}
 	return ncuo
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (ncuo *NotificationChangeUpdateOne) ClearDeleteTime() *NotificationChangeUpdateOne {
-	ncuo.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (ncuo *NotificationChangeUpdateOne) ClearDeletedAt() *NotificationChangeUpdateOne {
+	ncuo.mutation.ClearDeletedAt()
 	return ncuo
 }
 
-// SetUserIDID sets the "userID" edge to the User entity by ID.
-func (ncuo *NotificationChangeUpdateOne) SetUserIDID(id int) *NotificationChangeUpdateOne {
-	ncuo.mutation.SetUserIDID(id)
+// SetActorID sets the "actor" edge to the User entity by ID.
+func (ncuo *NotificationChangeUpdateOne) SetActorID(id int) *NotificationChangeUpdateOne {
+	ncuo.mutation.SetActorID(id)
 	return ncuo
 }
 
-// SetNillableUserIDID sets the "userID" edge to the User entity by ID if the given value is not nil.
-func (ncuo *NotificationChangeUpdateOne) SetNillableUserIDID(id *int) *NotificationChangeUpdateOne {
+// SetNillableActorID sets the "actor" edge to the User entity by ID if the given value is not nil.
+func (ncuo *NotificationChangeUpdateOne) SetNillableActorID(id *int) *NotificationChangeUpdateOne {
 	if id != nil {
-		ncuo = ncuo.SetUserIDID(*id)
+		ncuo = ncuo.SetActorID(*id)
 	}
 	return ncuo
 }
 
-// SetUserID sets the "userID" edge to the User entity.
-func (ncuo *NotificationChangeUpdateOne) SetUserID(u *User) *NotificationChangeUpdateOne {
-	return ncuo.SetUserIDID(u.ID)
+// SetActor sets the "actor" edge to the User entity.
+func (ncuo *NotificationChangeUpdateOne) SetActor(u *User) *NotificationChangeUpdateOne {
+	return ncuo.SetActorID(u.ID)
 }
 
-// SetNotificationObjectIDID sets the "notificationObjectID" edge to the NotificationObjectID entity by ID.
-func (ncuo *NotificationChangeUpdateOne) SetNotificationObjectIDID(id int) *NotificationChangeUpdateOne {
-	ncuo.mutation.SetNotificationObjectIDID(id)
+// SetNotificationObjectID sets the "notificationObject" edge to the NotificationObject entity by ID.
+func (ncuo *NotificationChangeUpdateOne) SetNotificationObjectID(id int) *NotificationChangeUpdateOne {
+	ncuo.mutation.SetNotificationObjectID(id)
 	return ncuo
 }
 
-// SetNillableNotificationObjectIDID sets the "notificationObjectID" edge to the NotificationObjectID entity by ID if the given value is not nil.
-func (ncuo *NotificationChangeUpdateOne) SetNillableNotificationObjectIDID(id *int) *NotificationChangeUpdateOne {
+// SetNillableNotificationObjectID sets the "notificationObject" edge to the NotificationObject entity by ID if the given value is not nil.
+func (ncuo *NotificationChangeUpdateOne) SetNillableNotificationObjectID(id *int) *NotificationChangeUpdateOne {
 	if id != nil {
-		ncuo = ncuo.SetNotificationObjectIDID(*id)
+		ncuo = ncuo.SetNotificationObjectID(*id)
 	}
 	return ncuo
 }
 
-// SetNotificationObjectID sets the "notificationObjectID" edge to the NotificationObjectID entity.
-func (ncuo *NotificationChangeUpdateOne) SetNotificationObjectID(n *NotificationObjectID) *NotificationChangeUpdateOne {
-	return ncuo.SetNotificationObjectIDID(n.ID)
+// SetNotificationObject sets the "notificationObject" edge to the NotificationObject entity.
+func (ncuo *NotificationChangeUpdateOne) SetNotificationObject(n *NotificationObject) *NotificationChangeUpdateOne {
+	return ncuo.SetNotificationObjectID(n.ID)
 }
 
 // Mutation returns the NotificationChangeMutation object of the builder.
@@ -288,15 +318,15 @@ func (ncuo *NotificationChangeUpdateOne) Mutation() *NotificationChangeMutation 
 	return ncuo.mutation
 }
 
-// ClearUserID clears the "userID" edge to the User entity.
-func (ncuo *NotificationChangeUpdateOne) ClearUserID() *NotificationChangeUpdateOne {
-	ncuo.mutation.ClearUserID()
+// ClearActor clears the "actor" edge to the User entity.
+func (ncuo *NotificationChangeUpdateOne) ClearActor() *NotificationChangeUpdateOne {
+	ncuo.mutation.ClearActor()
 	return ncuo
 }
 
-// ClearNotificationObjectID clears the "notificationObjectID" edge to the NotificationObjectID entity.
-func (ncuo *NotificationChangeUpdateOne) ClearNotificationObjectID() *NotificationChangeUpdateOne {
-	ncuo.mutation.ClearNotificationObjectID()
+// ClearNotificationObject clears the "notificationObject" edge to the NotificationObject entity.
+func (ncuo *NotificationChangeUpdateOne) ClearNotificationObject() *NotificationChangeUpdateOne {
+	ncuo.mutation.ClearNotificationObject()
 	return ncuo
 }
 
@@ -315,6 +345,9 @@ func (ncuo *NotificationChangeUpdateOne) Select(field string, fields ...string) 
 
 // Save executes the query and returns the updated NotificationChange entity.
 func (ncuo *NotificationChangeUpdateOne) Save(ctx context.Context) (*NotificationChange, error) {
+	if err := ncuo.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, ncuo.sqlSave, ncuo.mutation, ncuo.hooks)
 }
 
@@ -338,6 +371,18 @@ func (ncuo *NotificationChangeUpdateOne) ExecX(ctx context.Context) {
 	if err := ncuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ncuo *NotificationChangeUpdateOne) defaults() error {
+	if _, ok := ncuo.mutation.UpdatedAt(); !ok {
+		if notificationchange.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized notificationchange.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := notificationchange.UpdateDefaultUpdatedAt()
+		ncuo.mutation.SetUpdatedAt(v)
+	}
+	return nil
 }
 
 func (ncuo *NotificationChangeUpdateOne) sqlSave(ctx context.Context) (_node *NotificationChange, err error) {
@@ -366,18 +411,21 @@ func (ncuo *NotificationChangeUpdateOne) sqlSave(ctx context.Context) (_node *No
 			}
 		}
 	}
-	if value, ok := ncuo.mutation.DeleteTime(); ok {
-		_spec.SetField(notificationchange.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := ncuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(notificationchange.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if ncuo.mutation.DeleteTimeCleared() {
-		_spec.ClearField(notificationchange.FieldDeleteTime, field.TypeTime)
+	if value, ok := ncuo.mutation.DeletedAt(); ok {
+		_spec.SetField(notificationchange.FieldDeletedAt, field.TypeTime, value)
 	}
-	if ncuo.mutation.UserIDCleared() {
+	if ncuo.mutation.DeletedAtCleared() {
+		_spec.ClearField(notificationchange.FieldDeletedAt, field.TypeTime)
+	}
+	if ncuo.mutation.ActorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.UserIDTable,
-			Columns: []string{notificationchange.UserIDColumn},
+			Table:   notificationchange.ActorTable,
+			Columns: []string{notificationchange.ActorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -385,12 +433,12 @@ func (ncuo *NotificationChangeUpdateOne) sqlSave(ctx context.Context) (_node *No
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ncuo.mutation.UserIDIDs(); len(nodes) > 0 {
+	if nodes := ncuo.mutation.ActorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.UserIDTable,
-			Columns: []string{notificationchange.UserIDColumn},
+			Table:   notificationchange.ActorTable,
+			Columns: []string{notificationchange.ActorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -401,28 +449,28 @@ func (ncuo *NotificationChangeUpdateOne) sqlSave(ctx context.Context) (_node *No
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ncuo.mutation.NotificationObjectIDCleared() {
+	if ncuo.mutation.NotificationObjectCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.NotificationObjectIDTable,
-			Columns: []string{notificationchange.NotificationObjectIDColumn},
+			Table:   notificationchange.NotificationObjectTable,
+			Columns: []string{notificationchange.NotificationObjectColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ncuo.mutation.NotificationObjectIDIDs(); len(nodes) > 0 {
+	if nodes := ncuo.mutation.NotificationObjectIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notificationchange.NotificationObjectIDTable,
-			Columns: []string{notificationchange.NotificationObjectIDColumn},
+			Table:   notificationchange.NotificationObjectTable,
+			Columns: []string{notificationchange.NotificationObjectColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

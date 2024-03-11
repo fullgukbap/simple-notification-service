@@ -29,23 +29,29 @@ func (fsu *FriendshipStatusUpdate) Where(ps ...predicate.FriendshipStatus) *Frie
 	return fsu
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (fsu *FriendshipStatusUpdate) SetDeleteTime(t time.Time) *FriendshipStatusUpdate {
-	fsu.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (fsu *FriendshipStatusUpdate) SetUpdatedAt(t time.Time) *FriendshipStatusUpdate {
+	fsu.mutation.SetUpdatedAt(t)
 	return fsu
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (fsu *FriendshipStatusUpdate) SetNillableDeleteTime(t *time.Time) *FriendshipStatusUpdate {
+// SetDeletedAt sets the "deleted_at" field.
+func (fsu *FriendshipStatusUpdate) SetDeletedAt(t time.Time) *FriendshipStatusUpdate {
+	fsu.mutation.SetDeletedAt(t)
+	return fsu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (fsu *FriendshipStatusUpdate) SetNillableDeletedAt(t *time.Time) *FriendshipStatusUpdate {
 	if t != nil {
-		fsu.SetDeleteTime(*t)
+		fsu.SetDeletedAt(*t)
 	}
 	return fsu
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (fsu *FriendshipStatusUpdate) ClearDeleteTime() *FriendshipStatusUpdate {
-	fsu.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (fsu *FriendshipStatusUpdate) ClearDeletedAt() *FriendshipStatusUpdate {
+	fsu.mutation.ClearDeletedAt()
 	return fsu
 }
 
@@ -106,6 +112,9 @@ func (fsu *FriendshipStatusUpdate) RemoveFriendships(f ...*Friendship) *Friendsh
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fsu *FriendshipStatusUpdate) Save(ctx context.Context) (int, error) {
+	if err := fsu.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, fsu.sqlSave, fsu.mutation, fsu.hooks)
 }
 
@@ -131,6 +140,18 @@ func (fsu *FriendshipStatusUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (fsu *FriendshipStatusUpdate) defaults() error {
+	if _, ok := fsu.mutation.UpdatedAt(); !ok {
+		if friendshipstatus.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendshipstatus.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendshipstatus.UpdateDefaultUpdatedAt()
+		fsu.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 func (fsu *FriendshipStatusUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(friendshipstatus.Table, friendshipstatus.Columns, sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt))
 	if ps := fsu.mutation.predicates; len(ps) > 0 {
@@ -140,11 +161,14 @@ func (fsu *FriendshipStatusUpdate) sqlSave(ctx context.Context) (n int, err erro
 			}
 		}
 	}
-	if value, ok := fsu.mutation.DeleteTime(); ok {
-		_spec.SetField(friendshipstatus.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := fsu.mutation.UpdatedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if fsu.mutation.DeleteTimeCleared() {
-		_spec.ClearField(friendshipstatus.FieldDeleteTime, field.TypeTime)
+	if value, ok := fsu.mutation.DeletedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldDeletedAt, field.TypeTime, value)
+	}
+	if fsu.mutation.DeletedAtCleared() {
+		_spec.ClearField(friendshipstatus.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := fsu.mutation.Description(); ok {
 		_spec.SetField(friendshipstatus.FieldDescription, field.TypeString, value)
@@ -214,23 +238,29 @@ type FriendshipStatusUpdateOne struct {
 	mutation *FriendshipStatusMutation
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (fsuo *FriendshipStatusUpdateOne) SetDeleteTime(t time.Time) *FriendshipStatusUpdateOne {
-	fsuo.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (fsuo *FriendshipStatusUpdateOne) SetUpdatedAt(t time.Time) *FriendshipStatusUpdateOne {
+	fsuo.mutation.SetUpdatedAt(t)
 	return fsuo
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (fsuo *FriendshipStatusUpdateOne) SetNillableDeleteTime(t *time.Time) *FriendshipStatusUpdateOne {
+// SetDeletedAt sets the "deleted_at" field.
+func (fsuo *FriendshipStatusUpdateOne) SetDeletedAt(t time.Time) *FriendshipStatusUpdateOne {
+	fsuo.mutation.SetDeletedAt(t)
+	return fsuo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (fsuo *FriendshipStatusUpdateOne) SetNillableDeletedAt(t *time.Time) *FriendshipStatusUpdateOne {
 	if t != nil {
-		fsuo.SetDeleteTime(*t)
+		fsuo.SetDeletedAt(*t)
 	}
 	return fsuo
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (fsuo *FriendshipStatusUpdateOne) ClearDeleteTime() *FriendshipStatusUpdateOne {
-	fsuo.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (fsuo *FriendshipStatusUpdateOne) ClearDeletedAt() *FriendshipStatusUpdateOne {
+	fsuo.mutation.ClearDeletedAt()
 	return fsuo
 }
 
@@ -304,6 +334,9 @@ func (fsuo *FriendshipStatusUpdateOne) Select(field string, fields ...string) *F
 
 // Save executes the query and returns the updated FriendshipStatus entity.
 func (fsuo *FriendshipStatusUpdateOne) Save(ctx context.Context) (*FriendshipStatus, error) {
+	if err := fsuo.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, fsuo.sqlSave, fsuo.mutation, fsuo.hooks)
 }
 
@@ -327,6 +360,18 @@ func (fsuo *FriendshipStatusUpdateOne) ExecX(ctx context.Context) {
 	if err := fsuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// defaults sets the default values of the builder before save.
+func (fsuo *FriendshipStatusUpdateOne) defaults() error {
+	if _, ok := fsuo.mutation.UpdatedAt(); !ok {
+		if friendshipstatus.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendshipstatus.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendshipstatus.UpdateDefaultUpdatedAt()
+		fsuo.mutation.SetUpdatedAt(v)
+	}
+	return nil
 }
 
 func (fsuo *FriendshipStatusUpdateOne) sqlSave(ctx context.Context) (_node *FriendshipStatus, err error) {
@@ -355,11 +400,14 @@ func (fsuo *FriendshipStatusUpdateOne) sqlSave(ctx context.Context) (_node *Frie
 			}
 		}
 	}
-	if value, ok := fsuo.mutation.DeleteTime(); ok {
-		_spec.SetField(friendshipstatus.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := fsuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if fsuo.mutation.DeleteTimeCleared() {
-		_spec.ClearField(friendshipstatus.FieldDeleteTime, field.TypeTime)
+	if value, ok := fsuo.mutation.DeletedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldDeletedAt, field.TypeTime, value)
+	}
+	if fsuo.mutation.DeletedAtCleared() {
+		_spec.ClearField(friendshipstatus.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := fsuo.mutation.Description(); ok {
 		_spec.SetField(friendshipstatus.FieldDescription, field.TypeString, value)

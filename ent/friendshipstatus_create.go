@@ -21,16 +21,44 @@ type FriendshipStatusCreate struct {
 	hooks    []Hook
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (fsc *FriendshipStatusCreate) SetDeleteTime(t time.Time) *FriendshipStatusCreate {
-	fsc.mutation.SetDeleteTime(t)
+// SetCreatedAt sets the "created_at" field.
+func (fsc *FriendshipStatusCreate) SetCreatedAt(t time.Time) *FriendshipStatusCreate {
+	fsc.mutation.SetCreatedAt(t)
 	return fsc
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (fsc *FriendshipStatusCreate) SetNillableDeleteTime(t *time.Time) *FriendshipStatusCreate {
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (fsc *FriendshipStatusCreate) SetNillableCreatedAt(t *time.Time) *FriendshipStatusCreate {
 	if t != nil {
-		fsc.SetDeleteTime(*t)
+		fsc.SetCreatedAt(*t)
+	}
+	return fsc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (fsc *FriendshipStatusCreate) SetUpdatedAt(t time.Time) *FriendshipStatusCreate {
+	fsc.mutation.SetUpdatedAt(t)
+	return fsc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (fsc *FriendshipStatusCreate) SetNillableUpdatedAt(t *time.Time) *FriendshipStatusCreate {
+	if t != nil {
+		fsc.SetUpdatedAt(*t)
+	}
+	return fsc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (fsc *FriendshipStatusCreate) SetDeletedAt(t time.Time) *FriendshipStatusCreate {
+	fsc.mutation.SetDeletedAt(t)
+	return fsc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (fsc *FriendshipStatusCreate) SetNillableDeletedAt(t *time.Time) *FriendshipStatusCreate {
+	if t != nil {
+		fsc.SetDeletedAt(*t)
 	}
 	return fsc
 }
@@ -63,6 +91,9 @@ func (fsc *FriendshipStatusCreate) Mutation() *FriendshipStatusMutation {
 
 // Save creates the FriendshipStatus in the database.
 func (fsc *FriendshipStatusCreate) Save(ctx context.Context) (*FriendshipStatus, error) {
+	if err := fsc.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, fsc.sqlSave, fsc.mutation, fsc.hooks)
 }
 
@@ -88,8 +119,33 @@ func (fsc *FriendshipStatusCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (fsc *FriendshipStatusCreate) defaults() error {
+	if _, ok := fsc.mutation.CreatedAt(); !ok {
+		if friendshipstatus.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendshipstatus.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendshipstatus.DefaultCreatedAt()
+		fsc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := fsc.mutation.UpdatedAt(); !ok {
+		if friendshipstatus.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendshipstatus.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendshipstatus.DefaultUpdatedAt()
+		fsc.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (fsc *FriendshipStatusCreate) check() error {
+	if _, ok := fsc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FriendshipStatus.created_at"`)}
+	}
+	if _, ok := fsc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FriendshipStatus.updated_at"`)}
+	}
 	if _, ok := fsc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FriendshipStatus.description"`)}
 	}
@@ -119,9 +175,17 @@ func (fsc *FriendshipStatusCreate) createSpec() (*FriendshipStatus, *sqlgraph.Cr
 		_node = &FriendshipStatus{config: fsc.config}
 		_spec = sqlgraph.NewCreateSpec(friendshipstatus.Table, sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt))
 	)
-	if value, ok := fsc.mutation.DeleteTime(); ok {
-		_spec.SetField(friendshipstatus.FieldDeleteTime, field.TypeTime, value)
-		_node.DeleteTime = value
+	if value, ok := fsc.mutation.CreatedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := fsc.mutation.UpdatedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := fsc.mutation.DeletedAt(); ok {
+		_spec.SetField(friendshipstatus.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
 	}
 	if value, ok := fsc.mutation.Description(); ok {
 		_spec.SetField(friendshipstatus.FieldDescription, field.TypeString, value)
@@ -164,6 +228,7 @@ func (fscb *FriendshipStatusCreateBulk) Save(ctx context.Context) ([]*Friendship
 	for i := range fscb.builders {
 		func(i int, root context.Context) {
 			builder := fscb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FriendshipStatusMutation)
 				if !ok {

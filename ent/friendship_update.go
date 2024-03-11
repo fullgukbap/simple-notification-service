@@ -30,81 +30,87 @@ func (fu *FriendshipUpdate) Where(ps ...predicate.Friendship) *FriendshipUpdate 
 	return fu
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (fu *FriendshipUpdate) SetDeleteTime(t time.Time) *FriendshipUpdate {
-	fu.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (fu *FriendshipUpdate) SetUpdatedAt(t time.Time) *FriendshipUpdate {
+	fu.mutation.SetUpdatedAt(t)
 	return fu
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableDeleteTime(t *time.Time) *FriendshipUpdate {
+// SetDeletedAt sets the "deleted_at" field.
+func (fu *FriendshipUpdate) SetDeletedAt(t time.Time) *FriendshipUpdate {
+	fu.mutation.SetDeletedAt(t)
+	return fu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (fu *FriendshipUpdate) SetNillableDeletedAt(t *time.Time) *FriendshipUpdate {
 	if t != nil {
-		fu.SetDeleteTime(*t)
+		fu.SetDeletedAt(*t)
 	}
 	return fu
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (fu *FriendshipUpdate) ClearDeleteTime() *FriendshipUpdate {
-	fu.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (fu *FriendshipUpdate) ClearDeletedAt() *FriendshipUpdate {
+	fu.mutation.ClearDeletedAt()
 	return fu
 }
 
-// SetSenderIDID sets the "senderID" edge to the User entity by ID.
-func (fu *FriendshipUpdate) SetSenderIDID(id int) *FriendshipUpdate {
-	fu.mutation.SetSenderIDID(id)
+// SetSenderID sets the "sender" edge to the User entity by ID.
+func (fu *FriendshipUpdate) SetSenderID(id int) *FriendshipUpdate {
+	fu.mutation.SetSenderID(id)
 	return fu
 }
 
-// SetNillableSenderIDID sets the "senderID" edge to the User entity by ID if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableSenderIDID(id *int) *FriendshipUpdate {
+// SetNillableSenderID sets the "sender" edge to the User entity by ID if the given value is not nil.
+func (fu *FriendshipUpdate) SetNillableSenderID(id *int) *FriendshipUpdate {
 	if id != nil {
-		fu = fu.SetSenderIDID(*id)
+		fu = fu.SetSenderID(*id)
 	}
 	return fu
 }
 
-// SetSenderID sets the "senderID" edge to the User entity.
-func (fu *FriendshipUpdate) SetSenderID(u *User) *FriendshipUpdate {
-	return fu.SetSenderIDID(u.ID)
+// SetSender sets the "sender" edge to the User entity.
+func (fu *FriendshipUpdate) SetSender(u *User) *FriendshipUpdate {
+	return fu.SetSenderID(u.ID)
 }
 
-// SetReceiverIDID sets the "receiverID" edge to the User entity by ID.
-func (fu *FriendshipUpdate) SetReceiverIDID(id int) *FriendshipUpdate {
-	fu.mutation.SetReceiverIDID(id)
+// SetReceiverID sets the "receiver" edge to the User entity by ID.
+func (fu *FriendshipUpdate) SetReceiverID(id int) *FriendshipUpdate {
+	fu.mutation.SetReceiverID(id)
 	return fu
 }
 
-// SetNillableReceiverIDID sets the "receiverID" edge to the User entity by ID if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableReceiverIDID(id *int) *FriendshipUpdate {
+// SetNillableReceiverID sets the "receiver" edge to the User entity by ID if the given value is not nil.
+func (fu *FriendshipUpdate) SetNillableReceiverID(id *int) *FriendshipUpdate {
 	if id != nil {
-		fu = fu.SetReceiverIDID(*id)
+		fu = fu.SetReceiverID(*id)
 	}
 	return fu
 }
 
-// SetReceiverID sets the "receiverID" edge to the User entity.
-func (fu *FriendshipUpdate) SetReceiverID(u *User) *FriendshipUpdate {
-	return fu.SetReceiverIDID(u.ID)
+// SetReceiver sets the "receiver" edge to the User entity.
+func (fu *FriendshipUpdate) SetReceiver(u *User) *FriendshipUpdate {
+	return fu.SetReceiverID(u.ID)
 }
 
-// SetFriendshipStatusIDID sets the "friendshipStatusID" edge to the FriendshipStatus entity by ID.
-func (fu *FriendshipUpdate) SetFriendshipStatusIDID(id int) *FriendshipUpdate {
-	fu.mutation.SetFriendshipStatusIDID(id)
+// SetFriendshipStatusID sets the "friendshipStatus" edge to the FriendshipStatus entity by ID.
+func (fu *FriendshipUpdate) SetFriendshipStatusID(id int) *FriendshipUpdate {
+	fu.mutation.SetFriendshipStatusID(id)
 	return fu
 }
 
-// SetNillableFriendshipStatusIDID sets the "friendshipStatusID" edge to the FriendshipStatus entity by ID if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableFriendshipStatusIDID(id *int) *FriendshipUpdate {
+// SetNillableFriendshipStatusID sets the "friendshipStatus" edge to the FriendshipStatus entity by ID if the given value is not nil.
+func (fu *FriendshipUpdate) SetNillableFriendshipStatusID(id *int) *FriendshipUpdate {
 	if id != nil {
-		fu = fu.SetFriendshipStatusIDID(*id)
+		fu = fu.SetFriendshipStatusID(*id)
 	}
 	return fu
 }
 
-// SetFriendshipStatusID sets the "friendshipStatusID" edge to the FriendshipStatus entity.
-func (fu *FriendshipUpdate) SetFriendshipStatusID(f *FriendshipStatus) *FriendshipUpdate {
-	return fu.SetFriendshipStatusIDID(f.ID)
+// SetFriendshipStatus sets the "friendshipStatus" edge to the FriendshipStatus entity.
+func (fu *FriendshipUpdate) SetFriendshipStatus(f *FriendshipStatus) *FriendshipUpdate {
+	return fu.SetFriendshipStatusID(f.ID)
 }
 
 // Mutation returns the FriendshipMutation object of the builder.
@@ -112,26 +118,29 @@ func (fu *FriendshipUpdate) Mutation() *FriendshipMutation {
 	return fu.mutation
 }
 
-// ClearSenderID clears the "senderID" edge to the User entity.
-func (fu *FriendshipUpdate) ClearSenderID() *FriendshipUpdate {
-	fu.mutation.ClearSenderID()
+// ClearSender clears the "sender" edge to the User entity.
+func (fu *FriendshipUpdate) ClearSender() *FriendshipUpdate {
+	fu.mutation.ClearSender()
 	return fu
 }
 
-// ClearReceiverID clears the "receiverID" edge to the User entity.
-func (fu *FriendshipUpdate) ClearReceiverID() *FriendshipUpdate {
-	fu.mutation.ClearReceiverID()
+// ClearReceiver clears the "receiver" edge to the User entity.
+func (fu *FriendshipUpdate) ClearReceiver() *FriendshipUpdate {
+	fu.mutation.ClearReceiver()
 	return fu
 }
 
-// ClearFriendshipStatusID clears the "friendshipStatusID" edge to the FriendshipStatus entity.
-func (fu *FriendshipUpdate) ClearFriendshipStatusID() *FriendshipUpdate {
-	fu.mutation.ClearFriendshipStatusID()
+// ClearFriendshipStatus clears the "friendshipStatus" edge to the FriendshipStatus entity.
+func (fu *FriendshipUpdate) ClearFriendshipStatus() *FriendshipUpdate {
+	fu.mutation.ClearFriendshipStatus()
 	return fu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fu *FriendshipUpdate) Save(ctx context.Context) (int, error) {
+	if err := fu.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, fu.sqlSave, fu.mutation, fu.hooks)
 }
 
@@ -157,6 +166,18 @@ func (fu *FriendshipUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (fu *FriendshipUpdate) defaults() error {
+	if _, ok := fu.mutation.UpdatedAt(); !ok {
+		if friendship.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendship.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendship.UpdateDefaultUpdatedAt()
+		fu.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(friendship.Table, friendship.Columns, sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt))
 	if ps := fu.mutation.predicates; len(ps) > 0 {
@@ -166,18 +187,21 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := fu.mutation.DeleteTime(); ok {
-		_spec.SetField(friendship.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := fu.mutation.UpdatedAt(); ok {
+		_spec.SetField(friendship.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if fu.mutation.DeleteTimeCleared() {
-		_spec.ClearField(friendship.FieldDeleteTime, field.TypeTime)
+	if value, ok := fu.mutation.DeletedAt(); ok {
+		_spec.SetField(friendship.FieldDeletedAt, field.TypeTime, value)
 	}
-	if fu.mutation.SenderIDCleared() {
+	if fu.mutation.DeletedAtCleared() {
+		_spec.ClearField(friendship.FieldDeletedAt, field.TypeTime)
+	}
+	if fu.mutation.SenderCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.SenderIDTable,
-			Columns: []string{friendship.SenderIDColumn},
+			Table:   friendship.SenderTable,
+			Columns: []string{friendship.SenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -185,12 +209,12 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.SenderIDIDs(); len(nodes) > 0 {
+	if nodes := fu.mutation.SenderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.SenderIDTable,
-			Columns: []string{friendship.SenderIDColumn},
+			Table:   friendship.SenderTable,
+			Columns: []string{friendship.SenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -201,12 +225,12 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fu.mutation.ReceiverIDCleared() {
+	if fu.mutation.ReceiverCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.ReceiverIDTable,
-			Columns: []string{friendship.ReceiverIDColumn},
+			Table:   friendship.ReceiverTable,
+			Columns: []string{friendship.ReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -214,12 +238,12 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.ReceiverIDIDs(); len(nodes) > 0 {
+	if nodes := fu.mutation.ReceiverIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.ReceiverIDTable,
-			Columns: []string{friendship.ReceiverIDColumn},
+			Table:   friendship.ReceiverTable,
+			Columns: []string{friendship.ReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -230,12 +254,12 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fu.mutation.FriendshipStatusIDCleared() {
+	if fu.mutation.FriendshipStatusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.FriendshipStatusIDTable,
-			Columns: []string{friendship.FriendshipStatusIDColumn},
+			Table:   friendship.FriendshipStatusTable,
+			Columns: []string{friendship.FriendshipStatusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt),
@@ -243,12 +267,12 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.FriendshipStatusIDIDs(); len(nodes) > 0 {
+	if nodes := fu.mutation.FriendshipStatusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.FriendshipStatusIDTable,
-			Columns: []string{friendship.FriendshipStatusIDColumn},
+			Table:   friendship.FriendshipStatusTable,
+			Columns: []string{friendship.FriendshipStatusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt),
@@ -279,81 +303,87 @@ type FriendshipUpdateOne struct {
 	mutation *FriendshipMutation
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (fuo *FriendshipUpdateOne) SetDeleteTime(t time.Time) *FriendshipUpdateOne {
-	fuo.mutation.SetDeleteTime(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (fuo *FriendshipUpdateOne) SetUpdatedAt(t time.Time) *FriendshipUpdateOne {
+	fuo.mutation.SetUpdatedAt(t)
 	return fuo
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableDeleteTime(t *time.Time) *FriendshipUpdateOne {
+// SetDeletedAt sets the "deleted_at" field.
+func (fuo *FriendshipUpdateOne) SetDeletedAt(t time.Time) *FriendshipUpdateOne {
+	fuo.mutation.SetDeletedAt(t)
+	return fuo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (fuo *FriendshipUpdateOne) SetNillableDeletedAt(t *time.Time) *FriendshipUpdateOne {
 	if t != nil {
-		fuo.SetDeleteTime(*t)
+		fuo.SetDeletedAt(*t)
 	}
 	return fuo
 }
 
-// ClearDeleteTime clears the value of the "delete_time" field.
-func (fuo *FriendshipUpdateOne) ClearDeleteTime() *FriendshipUpdateOne {
-	fuo.mutation.ClearDeleteTime()
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (fuo *FriendshipUpdateOne) ClearDeletedAt() *FriendshipUpdateOne {
+	fuo.mutation.ClearDeletedAt()
 	return fuo
 }
 
-// SetSenderIDID sets the "senderID" edge to the User entity by ID.
-func (fuo *FriendshipUpdateOne) SetSenderIDID(id int) *FriendshipUpdateOne {
-	fuo.mutation.SetSenderIDID(id)
+// SetSenderID sets the "sender" edge to the User entity by ID.
+func (fuo *FriendshipUpdateOne) SetSenderID(id int) *FriendshipUpdateOne {
+	fuo.mutation.SetSenderID(id)
 	return fuo
 }
 
-// SetNillableSenderIDID sets the "senderID" edge to the User entity by ID if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableSenderIDID(id *int) *FriendshipUpdateOne {
+// SetNillableSenderID sets the "sender" edge to the User entity by ID if the given value is not nil.
+func (fuo *FriendshipUpdateOne) SetNillableSenderID(id *int) *FriendshipUpdateOne {
 	if id != nil {
-		fuo = fuo.SetSenderIDID(*id)
+		fuo = fuo.SetSenderID(*id)
 	}
 	return fuo
 }
 
-// SetSenderID sets the "senderID" edge to the User entity.
-func (fuo *FriendshipUpdateOne) SetSenderID(u *User) *FriendshipUpdateOne {
-	return fuo.SetSenderIDID(u.ID)
+// SetSender sets the "sender" edge to the User entity.
+func (fuo *FriendshipUpdateOne) SetSender(u *User) *FriendshipUpdateOne {
+	return fuo.SetSenderID(u.ID)
 }
 
-// SetReceiverIDID sets the "receiverID" edge to the User entity by ID.
-func (fuo *FriendshipUpdateOne) SetReceiverIDID(id int) *FriendshipUpdateOne {
-	fuo.mutation.SetReceiverIDID(id)
+// SetReceiverID sets the "receiver" edge to the User entity by ID.
+func (fuo *FriendshipUpdateOne) SetReceiverID(id int) *FriendshipUpdateOne {
+	fuo.mutation.SetReceiverID(id)
 	return fuo
 }
 
-// SetNillableReceiverIDID sets the "receiverID" edge to the User entity by ID if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableReceiverIDID(id *int) *FriendshipUpdateOne {
+// SetNillableReceiverID sets the "receiver" edge to the User entity by ID if the given value is not nil.
+func (fuo *FriendshipUpdateOne) SetNillableReceiverID(id *int) *FriendshipUpdateOne {
 	if id != nil {
-		fuo = fuo.SetReceiverIDID(*id)
+		fuo = fuo.SetReceiverID(*id)
 	}
 	return fuo
 }
 
-// SetReceiverID sets the "receiverID" edge to the User entity.
-func (fuo *FriendshipUpdateOne) SetReceiverID(u *User) *FriendshipUpdateOne {
-	return fuo.SetReceiverIDID(u.ID)
+// SetReceiver sets the "receiver" edge to the User entity.
+func (fuo *FriendshipUpdateOne) SetReceiver(u *User) *FriendshipUpdateOne {
+	return fuo.SetReceiverID(u.ID)
 }
 
-// SetFriendshipStatusIDID sets the "friendshipStatusID" edge to the FriendshipStatus entity by ID.
-func (fuo *FriendshipUpdateOne) SetFriendshipStatusIDID(id int) *FriendshipUpdateOne {
-	fuo.mutation.SetFriendshipStatusIDID(id)
+// SetFriendshipStatusID sets the "friendshipStatus" edge to the FriendshipStatus entity by ID.
+func (fuo *FriendshipUpdateOne) SetFriendshipStatusID(id int) *FriendshipUpdateOne {
+	fuo.mutation.SetFriendshipStatusID(id)
 	return fuo
 }
 
-// SetNillableFriendshipStatusIDID sets the "friendshipStatusID" edge to the FriendshipStatus entity by ID if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableFriendshipStatusIDID(id *int) *FriendshipUpdateOne {
+// SetNillableFriendshipStatusID sets the "friendshipStatus" edge to the FriendshipStatus entity by ID if the given value is not nil.
+func (fuo *FriendshipUpdateOne) SetNillableFriendshipStatusID(id *int) *FriendshipUpdateOne {
 	if id != nil {
-		fuo = fuo.SetFriendshipStatusIDID(*id)
+		fuo = fuo.SetFriendshipStatusID(*id)
 	}
 	return fuo
 }
 
-// SetFriendshipStatusID sets the "friendshipStatusID" edge to the FriendshipStatus entity.
-func (fuo *FriendshipUpdateOne) SetFriendshipStatusID(f *FriendshipStatus) *FriendshipUpdateOne {
-	return fuo.SetFriendshipStatusIDID(f.ID)
+// SetFriendshipStatus sets the "friendshipStatus" edge to the FriendshipStatus entity.
+func (fuo *FriendshipUpdateOne) SetFriendshipStatus(f *FriendshipStatus) *FriendshipUpdateOne {
+	return fuo.SetFriendshipStatusID(f.ID)
 }
 
 // Mutation returns the FriendshipMutation object of the builder.
@@ -361,21 +391,21 @@ func (fuo *FriendshipUpdateOne) Mutation() *FriendshipMutation {
 	return fuo.mutation
 }
 
-// ClearSenderID clears the "senderID" edge to the User entity.
-func (fuo *FriendshipUpdateOne) ClearSenderID() *FriendshipUpdateOne {
-	fuo.mutation.ClearSenderID()
+// ClearSender clears the "sender" edge to the User entity.
+func (fuo *FriendshipUpdateOne) ClearSender() *FriendshipUpdateOne {
+	fuo.mutation.ClearSender()
 	return fuo
 }
 
-// ClearReceiverID clears the "receiverID" edge to the User entity.
-func (fuo *FriendshipUpdateOne) ClearReceiverID() *FriendshipUpdateOne {
-	fuo.mutation.ClearReceiverID()
+// ClearReceiver clears the "receiver" edge to the User entity.
+func (fuo *FriendshipUpdateOne) ClearReceiver() *FriendshipUpdateOne {
+	fuo.mutation.ClearReceiver()
 	return fuo
 }
 
-// ClearFriendshipStatusID clears the "friendshipStatusID" edge to the FriendshipStatus entity.
-func (fuo *FriendshipUpdateOne) ClearFriendshipStatusID() *FriendshipUpdateOne {
-	fuo.mutation.ClearFriendshipStatusID()
+// ClearFriendshipStatus clears the "friendshipStatus" edge to the FriendshipStatus entity.
+func (fuo *FriendshipUpdateOne) ClearFriendshipStatus() *FriendshipUpdateOne {
+	fuo.mutation.ClearFriendshipStatus()
 	return fuo
 }
 
@@ -394,6 +424,9 @@ func (fuo *FriendshipUpdateOne) Select(field string, fields ...string) *Friendsh
 
 // Save executes the query and returns the updated Friendship entity.
 func (fuo *FriendshipUpdateOne) Save(ctx context.Context) (*Friendship, error) {
+	if err := fuo.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, fuo.sqlSave, fuo.mutation, fuo.hooks)
 }
 
@@ -417,6 +450,18 @@ func (fuo *FriendshipUpdateOne) ExecX(ctx context.Context) {
 	if err := fuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// defaults sets the default values of the builder before save.
+func (fuo *FriendshipUpdateOne) defaults() error {
+	if _, ok := fuo.mutation.UpdatedAt(); !ok {
+		if friendship.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendship.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendship.UpdateDefaultUpdatedAt()
+		fuo.mutation.SetUpdatedAt(v)
+	}
+	return nil
 }
 
 func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship, err error) {
@@ -445,18 +490,21 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 			}
 		}
 	}
-	if value, ok := fuo.mutation.DeleteTime(); ok {
-		_spec.SetField(friendship.FieldDeleteTime, field.TypeTime, value)
+	if value, ok := fuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(friendship.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if fuo.mutation.DeleteTimeCleared() {
-		_spec.ClearField(friendship.FieldDeleteTime, field.TypeTime)
+	if value, ok := fuo.mutation.DeletedAt(); ok {
+		_spec.SetField(friendship.FieldDeletedAt, field.TypeTime, value)
 	}
-	if fuo.mutation.SenderIDCleared() {
+	if fuo.mutation.DeletedAtCleared() {
+		_spec.ClearField(friendship.FieldDeletedAt, field.TypeTime)
+	}
+	if fuo.mutation.SenderCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.SenderIDTable,
-			Columns: []string{friendship.SenderIDColumn},
+			Table:   friendship.SenderTable,
+			Columns: []string{friendship.SenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -464,12 +512,12 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.SenderIDIDs(); len(nodes) > 0 {
+	if nodes := fuo.mutation.SenderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.SenderIDTable,
-			Columns: []string{friendship.SenderIDColumn},
+			Table:   friendship.SenderTable,
+			Columns: []string{friendship.SenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -480,12 +528,12 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fuo.mutation.ReceiverIDCleared() {
+	if fuo.mutation.ReceiverCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.ReceiverIDTable,
-			Columns: []string{friendship.ReceiverIDColumn},
+			Table:   friendship.ReceiverTable,
+			Columns: []string{friendship.ReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -493,12 +541,12 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.ReceiverIDIDs(); len(nodes) > 0 {
+	if nodes := fuo.mutation.ReceiverIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.ReceiverIDTable,
-			Columns: []string{friendship.ReceiverIDColumn},
+			Table:   friendship.ReceiverTable,
+			Columns: []string{friendship.ReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -509,12 +557,12 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fuo.mutation.FriendshipStatusIDCleared() {
+	if fuo.mutation.FriendshipStatusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.FriendshipStatusIDTable,
-			Columns: []string{friendship.FriendshipStatusIDColumn},
+			Table:   friendship.FriendshipStatusTable,
+			Columns: []string{friendship.FriendshipStatusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt),
@@ -522,12 +570,12 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.FriendshipStatusIDIDs(); len(nodes) > 0 {
+	if nodes := fuo.mutation.FriendshipStatusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.FriendshipStatusIDTable,
-			Columns: []string{friendship.FriendshipStatusIDColumn},
+			Table:   friendship.FriendshipStatusTable,
+			Columns: []string{friendship.FriendshipStatusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt),

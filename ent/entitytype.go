@@ -17,8 +17,12 @@ type EntityType struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// DeleteTime holds the value of the "delete_time" field.
-	DeleteTime time.Time `json:"delete_time,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// EntityName holds the value of the "entityName" field.
 	EntityName string `json:"entityName,omitempty"`
 	// NotificationDescription holds the value of the "notificationDescription" field.
@@ -31,20 +35,20 @@ type EntityType struct {
 
 // EntityTypeEdges holds the relations/edges for other nodes in the graph.
 type EntityTypeEdges struct {
-	// NotificationObjectIDs holds the value of the notificationObjectIDs edge.
-	NotificationObjectIDs []*NotificationObjectID `json:"notificationObjectIDs,omitempty"`
+	// NotificationObjects holds the value of the notificationObjects edge.
+	NotificationObjects []*NotificationObject `json:"notificationObjects,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// NotificationObjectIDsOrErr returns the NotificationObjectIDs value or an error if the edge
+// NotificationObjectsOrErr returns the NotificationObjects value or an error if the edge
 // was not loaded in eager-loading.
-func (e EntityTypeEdges) NotificationObjectIDsOrErr() ([]*NotificationObjectID, error) {
+func (e EntityTypeEdges) NotificationObjectsOrErr() ([]*NotificationObject, error) {
 	if e.loadedTypes[0] {
-		return e.NotificationObjectIDs, nil
+		return e.NotificationObjects, nil
 	}
-	return nil, &NotLoadedError{edge: "notificationObjectIDs"}
+	return nil, &NotLoadedError{edge: "notificationObjects"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -56,7 +60,7 @@ func (*EntityType) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case entitytype.FieldEntityName, entitytype.FieldNotificationDescription:
 			values[i] = new(sql.NullString)
-		case entitytype.FieldDeleteTime:
+		case entitytype.FieldCreatedAt, entitytype.FieldUpdatedAt, entitytype.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -79,11 +83,23 @@ func (et *EntityType) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			et.ID = int(value.Int64)
-		case entitytype.FieldDeleteTime:
+		case entitytype.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				et.DeleteTime = value.Time
+				et.CreatedAt = value.Time
+			}
+		case entitytype.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				et.UpdatedAt = value.Time
+			}
+		case entitytype.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				et.DeletedAt = value.Time
 			}
 		case entitytype.FieldEntityName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -110,9 +126,9 @@ func (et *EntityType) Value(name string) (ent.Value, error) {
 	return et.selectValues.Get(name)
 }
 
-// QueryNotificationObjectIDs queries the "notificationObjectIDs" edge of the EntityType entity.
-func (et *EntityType) QueryNotificationObjectIDs() *NotificationObjectIDQuery {
-	return NewEntityTypeClient(et.config).QueryNotificationObjectIDs(et)
+// QueryNotificationObjects queries the "notificationObjects" edge of the EntityType entity.
+func (et *EntityType) QueryNotificationObjects() *NotificationObjectQuery {
+	return NewEntityTypeClient(et.config).QueryNotificationObjects(et)
 }
 
 // Update returns a builder for updating this EntityType.
@@ -138,8 +154,14 @@ func (et *EntityType) String() string {
 	var builder strings.Builder
 	builder.WriteString("EntityType(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", et.ID))
-	builder.WriteString("delete_time=")
-	builder.WriteString(et.DeleteTime.Format(time.ANSIC))
+	builder.WriteString("created_at=")
+	builder.WriteString(et.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(et.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(et.DeletedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("entityName=")
 	builder.WriteString(et.EntityName)

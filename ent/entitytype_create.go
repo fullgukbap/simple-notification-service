@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"notification-service/ent/entitytype"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -21,16 +21,44 @@ type EntityTypeCreate struct {
 	hooks    []Hook
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (etc *EntityTypeCreate) SetDeleteTime(t time.Time) *EntityTypeCreate {
-	etc.mutation.SetDeleteTime(t)
+// SetCreatedAt sets the "created_at" field.
+func (etc *EntityTypeCreate) SetCreatedAt(t time.Time) *EntityTypeCreate {
+	etc.mutation.SetCreatedAt(t)
 	return etc
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (etc *EntityTypeCreate) SetNillableDeleteTime(t *time.Time) *EntityTypeCreate {
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (etc *EntityTypeCreate) SetNillableCreatedAt(t *time.Time) *EntityTypeCreate {
 	if t != nil {
-		etc.SetDeleteTime(*t)
+		etc.SetCreatedAt(*t)
+	}
+	return etc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (etc *EntityTypeCreate) SetUpdatedAt(t time.Time) *EntityTypeCreate {
+	etc.mutation.SetUpdatedAt(t)
+	return etc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (etc *EntityTypeCreate) SetNillableUpdatedAt(t *time.Time) *EntityTypeCreate {
+	if t != nil {
+		etc.SetUpdatedAt(*t)
+	}
+	return etc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (etc *EntityTypeCreate) SetDeletedAt(t time.Time) *EntityTypeCreate {
+	etc.mutation.SetDeletedAt(t)
+	return etc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (etc *EntityTypeCreate) SetNillableDeletedAt(t *time.Time) *EntityTypeCreate {
+	if t != nil {
+		etc.SetDeletedAt(*t)
 	}
 	return etc
 }
@@ -47,19 +75,19 @@ func (etc *EntityTypeCreate) SetNotificationDescription(s string) *EntityTypeCre
 	return etc
 }
 
-// AddNotificationObjectIDIDs adds the "notificationObjectIDs" edge to the NotificationObjectID entity by IDs.
-func (etc *EntityTypeCreate) AddNotificationObjectIDIDs(ids ...int) *EntityTypeCreate {
-	etc.mutation.AddNotificationObjectIDIDs(ids...)
+// AddNotificationObjectIDs adds the "notificationObjects" edge to the NotificationObject entity by IDs.
+func (etc *EntityTypeCreate) AddNotificationObjectIDs(ids ...int) *EntityTypeCreate {
+	etc.mutation.AddNotificationObjectIDs(ids...)
 	return etc
 }
 
-// AddNotificationObjectIDs adds the "notificationObjectIDs" edges to the NotificationObjectID entity.
-func (etc *EntityTypeCreate) AddNotificationObjectIDs(n ...*NotificationObjectID) *EntityTypeCreate {
+// AddNotificationObjects adds the "notificationObjects" edges to the NotificationObject entity.
+func (etc *EntityTypeCreate) AddNotificationObjects(n ...*NotificationObject) *EntityTypeCreate {
 	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return etc.AddNotificationObjectIDIDs(ids...)
+	return etc.AddNotificationObjectIDs(ids...)
 }
 
 // Mutation returns the EntityTypeMutation object of the builder.
@@ -69,6 +97,9 @@ func (etc *EntityTypeCreate) Mutation() *EntityTypeMutation {
 
 // Save creates the EntityType in the database.
 func (etc *EntityTypeCreate) Save(ctx context.Context) (*EntityType, error) {
+	if err := etc.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, etc.sqlSave, etc.mutation, etc.hooks)
 }
 
@@ -94,8 +125,33 @@ func (etc *EntityTypeCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (etc *EntityTypeCreate) defaults() error {
+	if _, ok := etc.mutation.CreatedAt(); !ok {
+		if entitytype.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized entitytype.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
+		v := entitytype.DefaultCreatedAt()
+		etc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := etc.mutation.UpdatedAt(); !ok {
+		if entitytype.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized entitytype.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := entitytype.DefaultUpdatedAt()
+		etc.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (etc *EntityTypeCreate) check() error {
+	if _, ok := etc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "EntityType.created_at"`)}
+	}
+	if _, ok := etc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "EntityType.updated_at"`)}
+	}
 	if _, ok := etc.mutation.EntityName(); !ok {
 		return &ValidationError{Name: "entityName", err: errors.New(`ent: missing required field "EntityType.entityName"`)}
 	}
@@ -128,9 +184,17 @@ func (etc *EntityTypeCreate) createSpec() (*EntityType, *sqlgraph.CreateSpec) {
 		_node = &EntityType{config: etc.config}
 		_spec = sqlgraph.NewCreateSpec(entitytype.Table, sqlgraph.NewFieldSpec(entitytype.FieldID, field.TypeInt))
 	)
-	if value, ok := etc.mutation.DeleteTime(); ok {
-		_spec.SetField(entitytype.FieldDeleteTime, field.TypeTime, value)
-		_node.DeleteTime = value
+	if value, ok := etc.mutation.CreatedAt(); ok {
+		_spec.SetField(entitytype.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := etc.mutation.UpdatedAt(); ok {
+		_spec.SetField(entitytype.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := etc.mutation.DeletedAt(); ok {
+		_spec.SetField(entitytype.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
 	}
 	if value, ok := etc.mutation.EntityName(); ok {
 		_spec.SetField(entitytype.FieldEntityName, field.TypeString, value)
@@ -140,15 +204,15 @@ func (etc *EntityTypeCreate) createSpec() (*EntityType, *sqlgraph.CreateSpec) {
 		_spec.SetField(entitytype.FieldNotificationDescription, field.TypeString, value)
 		_node.NotificationDescription = value
 	}
-	if nodes := etc.mutation.NotificationObjectIDsIDs(); len(nodes) > 0 {
+	if nodes := etc.mutation.NotificationObjectsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   entitytype.NotificationObjectIDsTable,
-			Columns: []string{entitytype.NotificationObjectIDsColumn},
+			Table:   entitytype.NotificationObjectsTable,
+			Columns: []string{entitytype.NotificationObjectsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -177,6 +241,7 @@ func (etcb *EntityTypeCreateBulk) Save(ctx context.Context) ([]*EntityType, erro
 	for i := range etcb.builders {
 		func(i int, root context.Context) {
 			builder := etcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EntityTypeMutation)
 				if !ok {

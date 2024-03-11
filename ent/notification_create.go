@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"notification-service/ent/notification"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/user"
 	"time"
 
@@ -22,16 +22,44 @@ type NotificationCreate struct {
 	hooks    []Hook
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (nc *NotificationCreate) SetDeleteTime(t time.Time) *NotificationCreate {
-	nc.mutation.SetDeleteTime(t)
+// SetCreatedAt sets the "created_at" field.
+func (nc *NotificationCreate) SetCreatedAt(t time.Time) *NotificationCreate {
+	nc.mutation.SetCreatedAt(t)
 	return nc
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (nc *NotificationCreate) SetNillableDeleteTime(t *time.Time) *NotificationCreate {
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (nc *NotificationCreate) SetNillableCreatedAt(t *time.Time) *NotificationCreate {
 	if t != nil {
-		nc.SetDeleteTime(*t)
+		nc.SetCreatedAt(*t)
+	}
+	return nc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (nc *NotificationCreate) SetUpdatedAt(t time.Time) *NotificationCreate {
+	nc.mutation.SetUpdatedAt(t)
+	return nc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (nc *NotificationCreate) SetNillableUpdatedAt(t *time.Time) *NotificationCreate {
+	if t != nil {
+		nc.SetUpdatedAt(*t)
+	}
+	return nc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (nc *NotificationCreate) SetDeletedAt(t time.Time) *NotificationCreate {
+	nc.mutation.SetDeletedAt(t)
+	return nc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (nc *NotificationCreate) SetNillableDeletedAt(t *time.Time) *NotificationCreate {
+	if t != nil {
+		nc.SetDeletedAt(*t)
 	}
 	return nc
 }
@@ -50,42 +78,42 @@ func (nc *NotificationCreate) SetNillableIsRead(b *bool) *NotificationCreate {
 	return nc
 }
 
-// SetNotificationObjectIDID sets the "notificationObjectID" edge to the NotificationObjectID entity by ID.
-func (nc *NotificationCreate) SetNotificationObjectIDID(id int) *NotificationCreate {
-	nc.mutation.SetNotificationObjectIDID(id)
+// SetNotificationObjectID sets the "notificationObject" edge to the NotificationObject entity by ID.
+func (nc *NotificationCreate) SetNotificationObjectID(id int) *NotificationCreate {
+	nc.mutation.SetNotificationObjectID(id)
 	return nc
 }
 
-// SetNillableNotificationObjectIDID sets the "notificationObjectID" edge to the NotificationObjectID entity by ID if the given value is not nil.
-func (nc *NotificationCreate) SetNillableNotificationObjectIDID(id *int) *NotificationCreate {
+// SetNillableNotificationObjectID sets the "notificationObject" edge to the NotificationObject entity by ID if the given value is not nil.
+func (nc *NotificationCreate) SetNillableNotificationObjectID(id *int) *NotificationCreate {
 	if id != nil {
-		nc = nc.SetNotificationObjectIDID(*id)
+		nc = nc.SetNotificationObjectID(*id)
 	}
 	return nc
 }
 
-// SetNotificationObjectID sets the "notificationObjectID" edge to the NotificationObjectID entity.
-func (nc *NotificationCreate) SetNotificationObjectID(n *NotificationObjectID) *NotificationCreate {
-	return nc.SetNotificationObjectIDID(n.ID)
+// SetNotificationObject sets the "notificationObject" edge to the NotificationObject entity.
+func (nc *NotificationCreate) SetNotificationObject(n *NotificationObject) *NotificationCreate {
+	return nc.SetNotificationObjectID(n.ID)
 }
 
-// SetUserIDID sets the "userID" edge to the User entity by ID.
-func (nc *NotificationCreate) SetUserIDID(id int) *NotificationCreate {
-	nc.mutation.SetUserIDID(id)
+// SetNotifierID sets the "notifier" edge to the User entity by ID.
+func (nc *NotificationCreate) SetNotifierID(id int) *NotificationCreate {
+	nc.mutation.SetNotifierID(id)
 	return nc
 }
 
-// SetNillableUserIDID sets the "userID" edge to the User entity by ID if the given value is not nil.
-func (nc *NotificationCreate) SetNillableUserIDID(id *int) *NotificationCreate {
+// SetNillableNotifierID sets the "notifier" edge to the User entity by ID if the given value is not nil.
+func (nc *NotificationCreate) SetNillableNotifierID(id *int) *NotificationCreate {
 	if id != nil {
-		nc = nc.SetUserIDID(*id)
+		nc = nc.SetNotifierID(*id)
 	}
 	return nc
 }
 
-// SetUserID sets the "userID" edge to the User entity.
-func (nc *NotificationCreate) SetUserID(u *User) *NotificationCreate {
-	return nc.SetUserIDID(u.ID)
+// SetNotifier sets the "notifier" edge to the User entity.
+func (nc *NotificationCreate) SetNotifier(u *User) *NotificationCreate {
+	return nc.SetNotifierID(u.ID)
 }
 
 // Mutation returns the NotificationMutation object of the builder.
@@ -125,6 +153,20 @@ func (nc *NotificationCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (nc *NotificationCreate) defaults() error {
+	if _, ok := nc.mutation.CreatedAt(); !ok {
+		if notification.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized notification.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
+		v := notification.DefaultCreatedAt()
+		nc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := nc.mutation.UpdatedAt(); !ok {
+		if notification.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized notification.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := notification.DefaultUpdatedAt()
+		nc.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := nc.mutation.IsRead(); !ok {
 		v := notification.DefaultIsRead
 		nc.mutation.SetIsRead(v)
@@ -134,6 +176,12 @@ func (nc *NotificationCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (nc *NotificationCreate) check() error {
+	if _, ok := nc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Notification.created_at"`)}
+	}
+	if _, ok := nc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Notification.updated_at"`)}
+	}
 	if _, ok := nc.mutation.IsRead(); !ok {
 		return &ValidationError{Name: "isRead", err: errors.New(`ent: missing required field "Notification.isRead"`)}
 	}
@@ -163,37 +211,45 @@ func (nc *NotificationCreate) createSpec() (*Notification, *sqlgraph.CreateSpec)
 		_node = &Notification{config: nc.config}
 		_spec = sqlgraph.NewCreateSpec(notification.Table, sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt))
 	)
-	if value, ok := nc.mutation.DeleteTime(); ok {
-		_spec.SetField(notification.FieldDeleteTime, field.TypeTime, value)
-		_node.DeleteTime = value
+	if value, ok := nc.mutation.CreatedAt(); ok {
+		_spec.SetField(notification.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := nc.mutation.UpdatedAt(); ok {
+		_spec.SetField(notification.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := nc.mutation.DeletedAt(); ok {
+		_spec.SetField(notification.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
 	}
 	if value, ok := nc.mutation.IsRead(); ok {
 		_spec.SetField(notification.FieldIsRead, field.TypeBool, value)
 		_node.IsRead = value
 	}
-	if nodes := nc.mutation.NotificationObjectIDIDs(); len(nodes) > 0 {
+	if nodes := nc.mutation.NotificationObjectIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notification.NotificationObjectIDTable,
-			Columns: []string{notification.NotificationObjectIDColumn},
+			Table:   notification.NotificationObjectTable,
+			Columns: []string{notification.NotificationObjectColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notificationobjectid.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notificationobject.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.notification_object_id_notifications = &nodes[0]
+		_node.notification_object_notifications = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nc.mutation.UserIDIDs(); len(nodes) > 0 {
+	if nodes := nc.mutation.NotifierIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   notification.UserIDTable,
-			Columns: []string{notification.UserIDColumn},
+			Table:   notification.NotifierTable,
+			Columns: []string{notification.NotifierColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),

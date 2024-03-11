@@ -55,9 +55,19 @@ func IDLTE(id int) predicate.EntityType {
 	return predicate.EntityType(sql.FieldLTE(FieldID, id))
 }
 
-// DeleteTime applies equality check predicate on the "delete_time" field. It's identical to DeleteTimeEQ.
-func DeleteTime(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldEQ(FieldDeleteTime, v))
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// DeletedAt applies equality check predicate on the "deleted_at" field. It's identical to DeletedAtEQ.
+func DeletedAt(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldEQ(FieldDeletedAt, v))
 }
 
 // EntityName applies equality check predicate on the "entityName" field. It's identical to EntityNameEQ.
@@ -70,54 +80,134 @@ func NotificationDescription(v string) predicate.EntityType {
 	return predicate.EntityType(sql.FieldEQ(FieldNotificationDescription, v))
 }
 
-// DeleteTimeEQ applies the EQ predicate on the "delete_time" field.
-func DeleteTimeEQ(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldEQ(FieldDeleteTime, v))
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// DeleteTimeNEQ applies the NEQ predicate on the "delete_time" field.
-func DeleteTimeNEQ(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldNEQ(FieldDeleteTime, v))
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldNEQ(FieldCreatedAt, v))
 }
 
-// DeleteTimeIn applies the In predicate on the "delete_time" field.
-func DeleteTimeIn(vs ...time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldIn(FieldDeleteTime, vs...))
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldIn(FieldCreatedAt, vs...))
 }
 
-// DeleteTimeNotIn applies the NotIn predicate on the "delete_time" field.
-func DeleteTimeNotIn(vs ...time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldNotIn(FieldDeleteTime, vs...))
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldNotIn(FieldCreatedAt, vs...))
 }
 
-// DeleteTimeGT applies the GT predicate on the "delete_time" field.
-func DeleteTimeGT(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldGT(FieldDeleteTime, v))
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldGT(FieldCreatedAt, v))
 }
 
-// DeleteTimeGTE applies the GTE predicate on the "delete_time" field.
-func DeleteTimeGTE(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldGTE(FieldDeleteTime, v))
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldGTE(FieldCreatedAt, v))
 }
 
-// DeleteTimeLT applies the LT predicate on the "delete_time" field.
-func DeleteTimeLT(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldLT(FieldDeleteTime, v))
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldLT(FieldCreatedAt, v))
 }
 
-// DeleteTimeLTE applies the LTE predicate on the "delete_time" field.
-func DeleteTimeLTE(v time.Time) predicate.EntityType {
-	return predicate.EntityType(sql.FieldLTE(FieldDeleteTime, v))
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// DeleteTimeIsNil applies the IsNil predicate on the "delete_time" field.
-func DeleteTimeIsNil() predicate.EntityType {
-	return predicate.EntityType(sql.FieldIsNull(FieldDeleteTime))
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// DeleteTimeNotNil applies the NotNil predicate on the "delete_time" field.
-func DeleteTimeNotNil() predicate.EntityType {
-	return predicate.EntityType(sql.FieldNotNull(FieldDeleteTime))
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// DeletedAtEQ applies the EQ predicate on the "deleted_at" field.
+func DeletedAtEQ(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldEQ(FieldDeletedAt, v))
+}
+
+// DeletedAtNEQ applies the NEQ predicate on the "deleted_at" field.
+func DeletedAtNEQ(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldNEQ(FieldDeletedAt, v))
+}
+
+// DeletedAtIn applies the In predicate on the "deleted_at" field.
+func DeletedAtIn(vs ...time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldIn(FieldDeletedAt, vs...))
+}
+
+// DeletedAtNotIn applies the NotIn predicate on the "deleted_at" field.
+func DeletedAtNotIn(vs ...time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldNotIn(FieldDeletedAt, vs...))
+}
+
+// DeletedAtGT applies the GT predicate on the "deleted_at" field.
+func DeletedAtGT(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldGT(FieldDeletedAt, v))
+}
+
+// DeletedAtGTE applies the GTE predicate on the "deleted_at" field.
+func DeletedAtGTE(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldGTE(FieldDeletedAt, v))
+}
+
+// DeletedAtLT applies the LT predicate on the "deleted_at" field.
+func DeletedAtLT(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldLT(FieldDeletedAt, v))
+}
+
+// DeletedAtLTE applies the LTE predicate on the "deleted_at" field.
+func DeletedAtLTE(v time.Time) predicate.EntityType {
+	return predicate.EntityType(sql.FieldLTE(FieldDeletedAt, v))
+}
+
+// DeletedAtIsNil applies the IsNil predicate on the "deleted_at" field.
+func DeletedAtIsNil() predicate.EntityType {
+	return predicate.EntityType(sql.FieldIsNull(FieldDeletedAt))
+}
+
+// DeletedAtNotNil applies the NotNil predicate on the "deleted_at" field.
+func DeletedAtNotNil() predicate.EntityType {
+	return predicate.EntityType(sql.FieldNotNull(FieldDeletedAt))
 }
 
 // EntityNameEQ applies the EQ predicate on the "entityName" field.
@@ -250,21 +340,21 @@ func NotificationDescriptionContainsFold(v string) predicate.EntityType {
 	return predicate.EntityType(sql.FieldContainsFold(FieldNotificationDescription, v))
 }
 
-// HasNotificationObjectIDs applies the HasEdge predicate on the "notificationObjectIDs" edge.
-func HasNotificationObjectIDs() predicate.EntityType {
+// HasNotificationObjects applies the HasEdge predicate on the "notificationObjects" edge.
+func HasNotificationObjects() predicate.EntityType {
 	return predicate.EntityType(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, NotificationObjectIDsTable, NotificationObjectIDsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, NotificationObjectsTable, NotificationObjectsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasNotificationObjectIDsWith applies the HasEdge predicate on the "notificationObjectIDs" edge with a given conditions (other predicates).
-func HasNotificationObjectIDsWith(preds ...predicate.NotificationObjectID) predicate.EntityType {
+// HasNotificationObjectsWith applies the HasEdge predicate on the "notificationObjects" edge with a given conditions (other predicates).
+func HasNotificationObjectsWith(preds ...predicate.NotificationObject) predicate.EntityType {
 	return predicate.EntityType(func(s *sql.Selector) {
-		step := newNotificationObjectIDsStep()
+		step := newNotificationObjectsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

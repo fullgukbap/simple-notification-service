@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"math"
 	"notification-service/ent/entitytype"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
@@ -19,11 +19,11 @@ import (
 // EntityTypeQuery is the builder for querying EntityType entities.
 type EntityTypeQuery struct {
 	config
-	ctx                       *QueryContext
-	order                     []entitytype.OrderOption
-	inters                    []Interceptor
-	predicates                []predicate.EntityType
-	withNotificationObjectIDs *NotificationObjectIDQuery
+	ctx                     *QueryContext
+	order                   []entitytype.OrderOption
+	inters                  []Interceptor
+	predicates              []predicate.EntityType
+	withNotificationObjects *NotificationObjectQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -60,9 +60,9 @@ func (etq *EntityTypeQuery) Order(o ...entitytype.OrderOption) *EntityTypeQuery 
 	return etq
 }
 
-// QueryNotificationObjectIDs chains the current query on the "notificationObjectIDs" edge.
-func (etq *EntityTypeQuery) QueryNotificationObjectIDs() *NotificationObjectIDQuery {
-	query := (&NotificationObjectIDClient{config: etq.config}).Query()
+// QueryNotificationObjects chains the current query on the "notificationObjects" edge.
+func (etq *EntityTypeQuery) QueryNotificationObjects() *NotificationObjectQuery {
+	query := (&NotificationObjectClient{config: etq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := etq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -73,8 +73,8 @@ func (etq *EntityTypeQuery) QueryNotificationObjectIDs() *NotificationObjectIDQu
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(entitytype.Table, entitytype.FieldID, selector),
-			sqlgraph.To(notificationobjectid.Table, notificationobjectid.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, entitytype.NotificationObjectIDsTable, entitytype.NotificationObjectIDsColumn),
+			sqlgraph.To(notificationobject.Table, notificationobject.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, entitytype.NotificationObjectsTable, entitytype.NotificationObjectsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(etq.driver.Dialect(), step)
 		return fromU, nil
@@ -269,26 +269,26 @@ func (etq *EntityTypeQuery) Clone() *EntityTypeQuery {
 		return nil
 	}
 	return &EntityTypeQuery{
-		config:                    etq.config,
-		ctx:                       etq.ctx.Clone(),
-		order:                     append([]entitytype.OrderOption{}, etq.order...),
-		inters:                    append([]Interceptor{}, etq.inters...),
-		predicates:                append([]predicate.EntityType{}, etq.predicates...),
-		withNotificationObjectIDs: etq.withNotificationObjectIDs.Clone(),
+		config:                  etq.config,
+		ctx:                     etq.ctx.Clone(),
+		order:                   append([]entitytype.OrderOption{}, etq.order...),
+		inters:                  append([]Interceptor{}, etq.inters...),
+		predicates:              append([]predicate.EntityType{}, etq.predicates...),
+		withNotificationObjects: etq.withNotificationObjects.Clone(),
 		// clone intermediate query.
 		sql:  etq.sql.Clone(),
 		path: etq.path,
 	}
 }
 
-// WithNotificationObjectIDs tells the query-builder to eager-load the nodes that are connected to
-// the "notificationObjectIDs" edge. The optional arguments are used to configure the query builder of the edge.
-func (etq *EntityTypeQuery) WithNotificationObjectIDs(opts ...func(*NotificationObjectIDQuery)) *EntityTypeQuery {
-	query := (&NotificationObjectIDClient{config: etq.config}).Query()
+// WithNotificationObjects tells the query-builder to eager-load the nodes that are connected to
+// the "notificationObjects" edge. The optional arguments are used to configure the query builder of the edge.
+func (etq *EntityTypeQuery) WithNotificationObjects(opts ...func(*NotificationObjectQuery)) *EntityTypeQuery {
+	query := (&NotificationObjectClient{config: etq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	etq.withNotificationObjectIDs = query
+	etq.withNotificationObjects = query
 	return etq
 }
 
@@ -298,12 +298,12 @@ func (etq *EntityTypeQuery) WithNotificationObjectIDs(opts ...func(*Notification
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.EntityType.Query().
-//		GroupBy(entitytype.FieldDeleteTime).
+//		GroupBy(entitytype.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (etq *EntityTypeQuery) GroupBy(field string, fields ...string) *EntityTypeGroupBy {
@@ -321,11 +321,11 @@ func (etq *EntityTypeQuery) GroupBy(field string, fields ...string) *EntityTypeG
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.EntityType.Query().
-//		Select(entitytype.FieldDeleteTime).
+//		Select(entitytype.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (etq *EntityTypeQuery) Select(fields ...string) *EntityTypeSelect {
 	etq.ctx.Fields = append(etq.ctx.Fields, fields...)
@@ -371,7 +371,7 @@ func (etq *EntityTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		nodes       = []*EntityType{}
 		_spec       = etq.querySpec()
 		loadedTypes = [1]bool{
-			etq.withNotificationObjectIDs != nil,
+			etq.withNotificationObjects != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -392,11 +392,11 @@ func (etq *EntityTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := etq.withNotificationObjectIDs; query != nil {
-		if err := etq.loadNotificationObjectIDs(ctx, query, nodes,
-			func(n *EntityType) { n.Edges.NotificationObjectIDs = []*NotificationObjectID{} },
-			func(n *EntityType, e *NotificationObjectID) {
-				n.Edges.NotificationObjectIDs = append(n.Edges.NotificationObjectIDs, e)
+	if query := etq.withNotificationObjects; query != nil {
+		if err := etq.loadNotificationObjects(ctx, query, nodes,
+			func(n *EntityType) { n.Edges.NotificationObjects = []*NotificationObject{} },
+			func(n *EntityType, e *NotificationObject) {
+				n.Edges.NotificationObjects = append(n.Edges.NotificationObjects, e)
 			}); err != nil {
 			return nil, err
 		}
@@ -404,7 +404,7 @@ func (etq *EntityTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
-func (etq *EntityTypeQuery) loadNotificationObjectIDs(ctx context.Context, query *NotificationObjectIDQuery, nodes []*EntityType, init func(*EntityType), assign func(*EntityType, *NotificationObjectID)) error {
+func (etq *EntityTypeQuery) loadNotificationObjects(ctx context.Context, query *NotificationObjectQuery, nodes []*EntityType, init func(*EntityType), assign func(*EntityType, *NotificationObject)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*EntityType)
 	for i := range nodes {
@@ -415,21 +415,21 @@ func (etq *EntityTypeQuery) loadNotificationObjectIDs(ctx context.Context, query
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.NotificationObjectID(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(entitytype.NotificationObjectIDsColumn), fks...))
+	query.Where(predicate.NotificationObject(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(entitytype.NotificationObjectsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.entity_type_notification_object_ids
+		fk := n.entity_type_notification_objects
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "entity_type_notification_object_ids" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "entity_type_notification_objects" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "entity_type_notification_object_ids" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "entity_type_notification_objects" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

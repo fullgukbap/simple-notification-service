@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"math"
 	"notification-service/ent/notificationchange"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/predicate"
 	"notification-service/ent/user"
 
@@ -19,13 +19,13 @@ import (
 // NotificationChangeQuery is the builder for querying NotificationChange entities.
 type NotificationChangeQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []notificationchange.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.NotificationChange
-	withUserID               *UserQuery
-	withNotificationObjectID *NotificationObjectIDQuery
-	withFKs                  bool
+	ctx                    *QueryContext
+	order                  []notificationchange.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.NotificationChange
+	withActor              *UserQuery
+	withNotificationObject *NotificationObjectQuery
+	withFKs                bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,8 +62,8 @@ func (ncq *NotificationChangeQuery) Order(o ...notificationchange.OrderOption) *
 	return ncq
 }
 
-// QueryUserID chains the current query on the "userID" edge.
-func (ncq *NotificationChangeQuery) QueryUserID() *UserQuery {
+// QueryActor chains the current query on the "actor" edge.
+func (ncq *NotificationChangeQuery) QueryActor() *UserQuery {
 	query := (&UserClient{config: ncq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := ncq.prepareQuery(ctx); err != nil {
@@ -76,7 +76,7 @@ func (ncq *NotificationChangeQuery) QueryUserID() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(notificationchange.Table, notificationchange.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, notificationchange.UserIDTable, notificationchange.UserIDColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, notificationchange.ActorTable, notificationchange.ActorColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(ncq.driver.Dialect(), step)
 		return fromU, nil
@@ -84,9 +84,9 @@ func (ncq *NotificationChangeQuery) QueryUserID() *UserQuery {
 	return query
 }
 
-// QueryNotificationObjectID chains the current query on the "notificationObjectID" edge.
-func (ncq *NotificationChangeQuery) QueryNotificationObjectID() *NotificationObjectIDQuery {
-	query := (&NotificationObjectIDClient{config: ncq.config}).Query()
+// QueryNotificationObject chains the current query on the "notificationObject" edge.
+func (ncq *NotificationChangeQuery) QueryNotificationObject() *NotificationObjectQuery {
+	query := (&NotificationObjectClient{config: ncq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := ncq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -97,8 +97,8 @@ func (ncq *NotificationChangeQuery) QueryNotificationObjectID() *NotificationObj
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(notificationchange.Table, notificationchange.FieldID, selector),
-			sqlgraph.To(notificationobjectid.Table, notificationobjectid.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, notificationchange.NotificationObjectIDTable, notificationchange.NotificationObjectIDColumn),
+			sqlgraph.To(notificationobject.Table, notificationobject.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notificationchange.NotificationObjectTable, notificationchange.NotificationObjectColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(ncq.driver.Dialect(), step)
 		return fromU, nil
@@ -293,38 +293,38 @@ func (ncq *NotificationChangeQuery) Clone() *NotificationChangeQuery {
 		return nil
 	}
 	return &NotificationChangeQuery{
-		config:                   ncq.config,
-		ctx:                      ncq.ctx.Clone(),
-		order:                    append([]notificationchange.OrderOption{}, ncq.order...),
-		inters:                   append([]Interceptor{}, ncq.inters...),
-		predicates:               append([]predicate.NotificationChange{}, ncq.predicates...),
-		withUserID:               ncq.withUserID.Clone(),
-		withNotificationObjectID: ncq.withNotificationObjectID.Clone(),
+		config:                 ncq.config,
+		ctx:                    ncq.ctx.Clone(),
+		order:                  append([]notificationchange.OrderOption{}, ncq.order...),
+		inters:                 append([]Interceptor{}, ncq.inters...),
+		predicates:             append([]predicate.NotificationChange{}, ncq.predicates...),
+		withActor:              ncq.withActor.Clone(),
+		withNotificationObject: ncq.withNotificationObject.Clone(),
 		// clone intermediate query.
 		sql:  ncq.sql.Clone(),
 		path: ncq.path,
 	}
 }
 
-// WithUserID tells the query-builder to eager-load the nodes that are connected to
-// the "userID" edge. The optional arguments are used to configure the query builder of the edge.
-func (ncq *NotificationChangeQuery) WithUserID(opts ...func(*UserQuery)) *NotificationChangeQuery {
+// WithActor tells the query-builder to eager-load the nodes that are connected to
+// the "actor" edge. The optional arguments are used to configure the query builder of the edge.
+func (ncq *NotificationChangeQuery) WithActor(opts ...func(*UserQuery)) *NotificationChangeQuery {
 	query := (&UserClient{config: ncq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ncq.withUserID = query
+	ncq.withActor = query
 	return ncq
 }
 
-// WithNotificationObjectID tells the query-builder to eager-load the nodes that are connected to
-// the "notificationObjectID" edge. The optional arguments are used to configure the query builder of the edge.
-func (ncq *NotificationChangeQuery) WithNotificationObjectID(opts ...func(*NotificationObjectIDQuery)) *NotificationChangeQuery {
-	query := (&NotificationObjectIDClient{config: ncq.config}).Query()
+// WithNotificationObject tells the query-builder to eager-load the nodes that are connected to
+// the "notificationObject" edge. The optional arguments are used to configure the query builder of the edge.
+func (ncq *NotificationChangeQuery) WithNotificationObject(opts ...func(*NotificationObjectQuery)) *NotificationChangeQuery {
+	query := (&NotificationObjectClient{config: ncq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ncq.withNotificationObjectID = query
+	ncq.withNotificationObject = query
 	return ncq
 }
 
@@ -334,12 +334,12 @@ func (ncq *NotificationChangeQuery) WithNotificationObjectID(opts ...func(*Notif
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.NotificationChange.Query().
-//		GroupBy(notificationchange.FieldDeleteTime).
+//		GroupBy(notificationchange.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (ncq *NotificationChangeQuery) GroupBy(field string, fields ...string) *NotificationChangeGroupBy {
@@ -357,11 +357,11 @@ func (ncq *NotificationChangeQuery) GroupBy(field string, fields ...string) *Not
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.NotificationChange.Query().
-//		Select(notificationchange.FieldDeleteTime).
+//		Select(notificationchange.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (ncq *NotificationChangeQuery) Select(fields ...string) *NotificationChangeSelect {
 	ncq.ctx.Fields = append(ncq.ctx.Fields, fields...)
@@ -408,11 +408,11 @@ func (ncq *NotificationChangeQuery) sqlAll(ctx context.Context, hooks ...queryHo
 		withFKs     = ncq.withFKs
 		_spec       = ncq.querySpec()
 		loadedTypes = [2]bool{
-			ncq.withUserID != nil,
-			ncq.withNotificationObjectID != nil,
+			ncq.withActor != nil,
+			ncq.withNotificationObject != nil,
 		}
 	)
-	if ncq.withUserID != nil || ncq.withNotificationObjectID != nil {
+	if ncq.withActor != nil || ncq.withNotificationObject != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -436,22 +436,22 @@ func (ncq *NotificationChangeQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ncq.withUserID; query != nil {
-		if err := ncq.loadUserID(ctx, query, nodes, nil,
-			func(n *NotificationChange, e *User) { n.Edges.UserID = e }); err != nil {
+	if query := ncq.withActor; query != nil {
+		if err := ncq.loadActor(ctx, query, nodes, nil,
+			func(n *NotificationChange, e *User) { n.Edges.Actor = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ncq.withNotificationObjectID; query != nil {
-		if err := ncq.loadNotificationObjectID(ctx, query, nodes, nil,
-			func(n *NotificationChange, e *NotificationObjectID) { n.Edges.NotificationObjectID = e }); err != nil {
+	if query := ncq.withNotificationObject; query != nil {
+		if err := ncq.loadNotificationObject(ctx, query, nodes, nil,
+			func(n *NotificationChange, e *NotificationObject) { n.Edges.NotificationObject = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (ncq *NotificationChangeQuery) loadUserID(ctx context.Context, query *UserQuery, nodes []*NotificationChange, init func(*NotificationChange), assign func(*NotificationChange, *User)) error {
+func (ncq *NotificationChangeQuery) loadActor(ctx context.Context, query *UserQuery, nodes []*NotificationChange, init func(*NotificationChange), assign func(*NotificationChange, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*NotificationChange)
 	for i := range nodes {
@@ -483,14 +483,14 @@ func (ncq *NotificationChangeQuery) loadUserID(ctx context.Context, query *UserQ
 	}
 	return nil
 }
-func (ncq *NotificationChangeQuery) loadNotificationObjectID(ctx context.Context, query *NotificationObjectIDQuery, nodes []*NotificationChange, init func(*NotificationChange), assign func(*NotificationChange, *NotificationObjectID)) error {
+func (ncq *NotificationChangeQuery) loadNotificationObject(ctx context.Context, query *NotificationObjectQuery, nodes []*NotificationChange, init func(*NotificationChange), assign func(*NotificationChange, *NotificationObject)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*NotificationChange)
 	for i := range nodes {
-		if nodes[i].notification_object_id_notification_changes == nil {
+		if nodes[i].notification_object_notification_changes == nil {
 			continue
 		}
-		fk := *nodes[i].notification_object_id_notification_changes
+		fk := *nodes[i].notification_object_notification_changes
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -499,7 +499,7 @@ func (ncq *NotificationChangeQuery) loadNotificationObjectID(ctx context.Context
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(notificationobjectid.IDIn(ids...))
+	query.Where(notificationobject.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -507,7 +507,7 @@ func (ncq *NotificationChangeQuery) loadNotificationObjectID(ctx context.Context
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "notification_object_id_notification_changes" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "notification_object_notification_changes" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

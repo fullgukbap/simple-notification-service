@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"notification-service/ent/friendship"
 	"notification-service/ent/friendshipstatus"
@@ -21,75 +22,103 @@ type FriendshipCreate struct {
 	hooks    []Hook
 }
 
-// SetDeleteTime sets the "delete_time" field.
-func (fc *FriendshipCreate) SetDeleteTime(t time.Time) *FriendshipCreate {
-	fc.mutation.SetDeleteTime(t)
+// SetCreatedAt sets the "created_at" field.
+func (fc *FriendshipCreate) SetCreatedAt(t time.Time) *FriendshipCreate {
+	fc.mutation.SetCreatedAt(t)
 	return fc
 }
 
-// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
-func (fc *FriendshipCreate) SetNillableDeleteTime(t *time.Time) *FriendshipCreate {
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (fc *FriendshipCreate) SetNillableCreatedAt(t *time.Time) *FriendshipCreate {
 	if t != nil {
-		fc.SetDeleteTime(*t)
+		fc.SetCreatedAt(*t)
 	}
 	return fc
 }
 
-// SetSenderIDID sets the "senderID" edge to the User entity by ID.
-func (fc *FriendshipCreate) SetSenderIDID(id int) *FriendshipCreate {
-	fc.mutation.SetSenderIDID(id)
+// SetUpdatedAt sets the "updated_at" field.
+func (fc *FriendshipCreate) SetUpdatedAt(t time.Time) *FriendshipCreate {
+	fc.mutation.SetUpdatedAt(t)
 	return fc
 }
 
-// SetNillableSenderIDID sets the "senderID" edge to the User entity by ID if the given value is not nil.
-func (fc *FriendshipCreate) SetNillableSenderIDID(id *int) *FriendshipCreate {
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (fc *FriendshipCreate) SetNillableUpdatedAt(t *time.Time) *FriendshipCreate {
+	if t != nil {
+		fc.SetUpdatedAt(*t)
+	}
+	return fc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (fc *FriendshipCreate) SetDeletedAt(t time.Time) *FriendshipCreate {
+	fc.mutation.SetDeletedAt(t)
+	return fc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (fc *FriendshipCreate) SetNillableDeletedAt(t *time.Time) *FriendshipCreate {
+	if t != nil {
+		fc.SetDeletedAt(*t)
+	}
+	return fc
+}
+
+// SetSenderID sets the "sender" edge to the User entity by ID.
+func (fc *FriendshipCreate) SetSenderID(id int) *FriendshipCreate {
+	fc.mutation.SetSenderID(id)
+	return fc
+}
+
+// SetNillableSenderID sets the "sender" edge to the User entity by ID if the given value is not nil.
+func (fc *FriendshipCreate) SetNillableSenderID(id *int) *FriendshipCreate {
 	if id != nil {
-		fc = fc.SetSenderIDID(*id)
+		fc = fc.SetSenderID(*id)
 	}
 	return fc
 }
 
-// SetSenderID sets the "senderID" edge to the User entity.
-func (fc *FriendshipCreate) SetSenderID(u *User) *FriendshipCreate {
-	return fc.SetSenderIDID(u.ID)
+// SetSender sets the "sender" edge to the User entity.
+func (fc *FriendshipCreate) SetSender(u *User) *FriendshipCreate {
+	return fc.SetSenderID(u.ID)
 }
 
-// SetReceiverIDID sets the "receiverID" edge to the User entity by ID.
-func (fc *FriendshipCreate) SetReceiverIDID(id int) *FriendshipCreate {
-	fc.mutation.SetReceiverIDID(id)
+// SetReceiverID sets the "receiver" edge to the User entity by ID.
+func (fc *FriendshipCreate) SetReceiverID(id int) *FriendshipCreate {
+	fc.mutation.SetReceiverID(id)
 	return fc
 }
 
-// SetNillableReceiverIDID sets the "receiverID" edge to the User entity by ID if the given value is not nil.
-func (fc *FriendshipCreate) SetNillableReceiverIDID(id *int) *FriendshipCreate {
+// SetNillableReceiverID sets the "receiver" edge to the User entity by ID if the given value is not nil.
+func (fc *FriendshipCreate) SetNillableReceiverID(id *int) *FriendshipCreate {
 	if id != nil {
-		fc = fc.SetReceiverIDID(*id)
+		fc = fc.SetReceiverID(*id)
 	}
 	return fc
 }
 
-// SetReceiverID sets the "receiverID" edge to the User entity.
-func (fc *FriendshipCreate) SetReceiverID(u *User) *FriendshipCreate {
-	return fc.SetReceiverIDID(u.ID)
+// SetReceiver sets the "receiver" edge to the User entity.
+func (fc *FriendshipCreate) SetReceiver(u *User) *FriendshipCreate {
+	return fc.SetReceiverID(u.ID)
 }
 
-// SetFriendshipStatusIDID sets the "friendshipStatusID" edge to the FriendshipStatus entity by ID.
-func (fc *FriendshipCreate) SetFriendshipStatusIDID(id int) *FriendshipCreate {
-	fc.mutation.SetFriendshipStatusIDID(id)
+// SetFriendshipStatusID sets the "friendshipStatus" edge to the FriendshipStatus entity by ID.
+func (fc *FriendshipCreate) SetFriendshipStatusID(id int) *FriendshipCreate {
+	fc.mutation.SetFriendshipStatusID(id)
 	return fc
 }
 
-// SetNillableFriendshipStatusIDID sets the "friendshipStatusID" edge to the FriendshipStatus entity by ID if the given value is not nil.
-func (fc *FriendshipCreate) SetNillableFriendshipStatusIDID(id *int) *FriendshipCreate {
+// SetNillableFriendshipStatusID sets the "friendshipStatus" edge to the FriendshipStatus entity by ID if the given value is not nil.
+func (fc *FriendshipCreate) SetNillableFriendshipStatusID(id *int) *FriendshipCreate {
 	if id != nil {
-		fc = fc.SetFriendshipStatusIDID(*id)
+		fc = fc.SetFriendshipStatusID(*id)
 	}
 	return fc
 }
 
-// SetFriendshipStatusID sets the "friendshipStatusID" edge to the FriendshipStatus entity.
-func (fc *FriendshipCreate) SetFriendshipStatusID(f *FriendshipStatus) *FriendshipCreate {
-	return fc.SetFriendshipStatusIDID(f.ID)
+// SetFriendshipStatus sets the "friendshipStatus" edge to the FriendshipStatus entity.
+func (fc *FriendshipCreate) SetFriendshipStatus(f *FriendshipStatus) *FriendshipCreate {
+	return fc.SetFriendshipStatusID(f.ID)
 }
 
 // Mutation returns the FriendshipMutation object of the builder.
@@ -99,6 +128,9 @@ func (fc *FriendshipCreate) Mutation() *FriendshipMutation {
 
 // Save creates the Friendship in the database.
 func (fc *FriendshipCreate) Save(ctx context.Context) (*Friendship, error) {
+	if err := fc.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, fc.sqlSave, fc.mutation, fc.hooks)
 }
 
@@ -124,8 +156,33 @@ func (fc *FriendshipCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (fc *FriendshipCreate) defaults() error {
+	if _, ok := fc.mutation.CreatedAt(); !ok {
+		if friendship.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendship.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendship.DefaultCreatedAt()
+		fc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := fc.mutation.UpdatedAt(); !ok {
+		if friendship.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized friendship.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := friendship.DefaultUpdatedAt()
+		fc.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (fc *FriendshipCreate) check() error {
+	if _, ok := fc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Friendship.created_at"`)}
+	}
+	if _, ok := fc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Friendship.updated_at"`)}
+	}
 	return nil
 }
 
@@ -152,16 +209,24 @@ func (fc *FriendshipCreate) createSpec() (*Friendship, *sqlgraph.CreateSpec) {
 		_node = &Friendship{config: fc.config}
 		_spec = sqlgraph.NewCreateSpec(friendship.Table, sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt))
 	)
-	if value, ok := fc.mutation.DeleteTime(); ok {
-		_spec.SetField(friendship.FieldDeleteTime, field.TypeTime, value)
-		_node.DeleteTime = value
+	if value, ok := fc.mutation.CreatedAt(); ok {
+		_spec.SetField(friendship.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
 	}
-	if nodes := fc.mutation.SenderIDIDs(); len(nodes) > 0 {
+	if value, ok := fc.mutation.UpdatedAt(); ok {
+		_spec.SetField(friendship.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := fc.mutation.DeletedAt(); ok {
+		_spec.SetField(friendship.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
+	}
+	if nodes := fc.mutation.SenderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.SenderIDTable,
-			Columns: []string{friendship.SenderIDColumn},
+			Table:   friendship.SenderTable,
+			Columns: []string{friendship.SenderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -173,12 +238,12 @@ func (fc *FriendshipCreate) createSpec() (*Friendship, *sqlgraph.CreateSpec) {
 		_node.user_friendships_receiver = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fc.mutation.ReceiverIDIDs(); len(nodes) > 0 {
+	if nodes := fc.mutation.ReceiverIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.ReceiverIDTable,
-			Columns: []string{friendship.ReceiverIDColumn},
+			Table:   friendship.ReceiverTable,
+			Columns: []string{friendship.ReceiverColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
@@ -190,12 +255,12 @@ func (fc *FriendshipCreate) createSpec() (*Friendship, *sqlgraph.CreateSpec) {
 		_node.user_friendships_sender = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fc.mutation.FriendshipStatusIDIDs(); len(nodes) > 0 {
+	if nodes := fc.mutation.FriendshipStatusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   friendship.FriendshipStatusIDTable,
-			Columns: []string{friendship.FriendshipStatusIDColumn},
+			Table:   friendship.FriendshipStatusTable,
+			Columns: []string{friendship.FriendshipStatusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(friendshipstatus.FieldID, field.TypeInt),
@@ -228,6 +293,7 @@ func (fcb *FriendshipCreateBulk) Save(ctx context.Context) ([]*Friendship, error
 	for i := range fcb.builders {
 		func(i int, root context.Context) {
 			builder := fcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FriendshipMutation)
 				if !ok {

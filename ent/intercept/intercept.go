@@ -11,7 +11,7 @@ import (
 	"notification-service/ent/friendshipstatus"
 	"notification-service/ent/notification"
 	"notification-service/ent/notificationchange"
-	"notification-service/ent/notificationobjectid"
+	"notification-service/ent/notificationobject"
 	"notification-service/ent/predicate"
 	"notification-service/ent/user"
 
@@ -209,31 +209,31 @@ func (f TraverseNotificationChange) Traverse(ctx context.Context, q ent.Query) e
 	return fmt.Errorf("unexpected query type %T. expect *ent.NotificationChangeQuery", q)
 }
 
-// The NotificationObjectIDFunc type is an adapter to allow the use of ordinary function as a Querier.
-type NotificationObjectIDFunc func(context.Context, *ent.NotificationObjectIDQuery) (ent.Value, error)
+// The NotificationObjectFunc type is an adapter to allow the use of ordinary function as a Querier.
+type NotificationObjectFunc func(context.Context, *ent.NotificationObjectQuery) (ent.Value, error)
 
 // Query calls f(ctx, q).
-func (f NotificationObjectIDFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.NotificationObjectIDQuery); ok {
+func (f NotificationObjectFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.NotificationObjectQuery); ok {
 		return f(ctx, q)
 	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.NotificationObjectIDQuery", q)
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.NotificationObjectQuery", q)
 }
 
-// The TraverseNotificationObjectID type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseNotificationObjectID func(context.Context, *ent.NotificationObjectIDQuery) error
+// The TraverseNotificationObject type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseNotificationObject func(context.Context, *ent.NotificationObjectQuery) error
 
 // Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseNotificationObjectID) Intercept(next ent.Querier) ent.Querier {
+func (f TraverseNotificationObject) Intercept(next ent.Querier) ent.Querier {
 	return next
 }
 
 // Traverse calls f(ctx, q).
-func (f TraverseNotificationObjectID) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.NotificationObjectIDQuery); ok {
+func (f TraverseNotificationObject) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.NotificationObjectQuery); ok {
 		return f(ctx, q)
 	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.NotificationObjectIDQuery", q)
+	return fmt.Errorf("unexpected query type %T. expect *ent.NotificationObjectQuery", q)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -276,8 +276,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.NotificationQuery, predicate.Notification, notification.OrderOption]{typ: ent.TypeNotification, tq: q}, nil
 	case *ent.NotificationChangeQuery:
 		return &query[*ent.NotificationChangeQuery, predicate.NotificationChange, notificationchange.OrderOption]{typ: ent.TypeNotificationChange, tq: q}, nil
-	case *ent.NotificationObjectIDQuery:
-		return &query[*ent.NotificationObjectIDQuery, predicate.NotificationObjectID, notificationobjectid.OrderOption]{typ: ent.TypeNotificationObjectID, tq: q}, nil
+	case *ent.NotificationObjectQuery:
+		return &query[*ent.NotificationObjectQuery, predicate.NotificationObject, notificationobject.OrderOption]{typ: ent.TypeNotificationObject, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
 	default:

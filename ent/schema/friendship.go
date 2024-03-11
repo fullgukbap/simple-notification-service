@@ -26,15 +26,15 @@ func (Friendship) Fields() []ent.Field {
 // Edges of the Friendship.
 func (Friendship) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("senderID", User.Type).
+		edge.From("sender", User.Type).
 			Ref("friendshipsReceiver").
 			Unique(),
 
-		edge.From("receiverID", User.Type).
+		edge.From("receiver", User.Type).
 			Ref("friendshipsSender").
 			Unique(),
 
-		edge.From("friendshipStatusID", FriendshipStatus.Type).
+		edge.From("friendshipStatus", FriendshipStatus.Type).
 			Ref("friendships").
 			Unique(),
 	}

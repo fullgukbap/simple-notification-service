@@ -298,12 +298,12 @@ func (fsq *FriendshipStatusQuery) WithFriendships(opts ...func(*FriendshipQuery)
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.FriendshipStatus.Query().
-//		GroupBy(friendshipstatus.FieldDeleteTime).
+//		GroupBy(friendshipstatus.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fsq *FriendshipStatusQuery) GroupBy(field string, fields ...string) *FriendshipStatusGroupBy {
@@ -321,11 +321,11 @@ func (fsq *FriendshipStatusQuery) GroupBy(field string, fields ...string) *Frien
 // Example:
 //
 //	var v []struct {
-//		DeleteTime time.Time `json:"delete_time,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.FriendshipStatus.Query().
-//		Select(friendshipstatus.FieldDeleteTime).
+//		Select(friendshipstatus.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (fsq *FriendshipStatusQuery) Select(fields ...string) *FriendshipStatusSelect {
 	fsq.ctx.Fields = append(fsq.ctx.Fields, fields...)
