@@ -2,6 +2,16 @@
 
 본 저장소는 notification-service를 간단하게 개발한 내용을 담고 있습니다.
 
+## Stack
+
+| STACK                |   Server             |
+|:--------------------:|:--------------------:|
+| Developer            |   fullgukbap         |
+| Develop Language     |   GO (gofiber/v2)    |
+| DB                   |   mysql              |
+| Develop Tool         |   Visual Studio Code |
+| ORM                  |   ent                |
+
 ## ERD
 
 ![img](./imgs/my-erd.png)
@@ -129,3 +139,17 @@ User:
         | notificationChanges | NotificationChange | false   |         | O2M      | false  | true     |         |
         +---------------------+--------------------+---------+---------+----------+--------+----------+---------+
 ```
+
+## Reference
+
+Design notification system for RDBMS
+
+- <https://tannguyenit95.medium.com/designing-a-notification-system-1da83ca971bc>
+
+Gofiber v2
+
+- <https://docs.gofiber.io>
+
+ent
+
+- <https://entgo.io/docs/getting-started>
